@@ -10,6 +10,8 @@ use Runn\Fs\Exceptions\FileNullContents;
  * Trait FileAsStorageTrait
  * @package Runn\Fs
  *
+ * @implements \Runn\Fs\FileAsStorageInterface
+ *
  * @mixin \Runn\Fs\File
  */
 trait FileAsStorageTrait

@@ -5,6 +5,12 @@ namespace Runn\Fs;
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\PassThru;
 
+/**
+ * File with serializer (serialized contents)
+ *
+ * Class FileWithSerializer
+ * @package Runn\Fs
+ */
 class FileWithSerializer
     extends File
     implements FileAsStorageWithSerializerInterface
@@ -15,13 +21,13 @@ class FileWithSerializer
      */
     protected $serializer;
 
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(/*?*/SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
         return $this;
     }
 
-    public function getSerializer(): SerializerInterface
+    public function getSerializer(): /*?*/SerializerInterface
     {
         return $this->serializer ?: new PassThru();
     }

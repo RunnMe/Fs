@@ -6,16 +6,21 @@ use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\Php;
 
+/**
+ * File with contents serialized into PHP array
+ * Class PhpFile
+ * @package Runn\Fs
+ */
 class PhpFile
     extends FileWithSerializer
 {
 
-    public function getSerializer(): SerializerInterface
+    public function getSerializer(): /*?*/SerializerInterface
     {
         return new Php();
     }
 
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(/*?*/SerializerInterface $serializer)
     {
         throw new \BadMethodCallException();
     }
