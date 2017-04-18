@@ -17,17 +17,17 @@ class FileWithSerializer
 {
 
     /**
-     * @var \Runn\Serialization\SerializerInterface
+     * @var \Runn\Serialization\SerializerInterface|null
      */
     protected $serializer;
 
-    public function setSerializer(/*?*/SerializerInterface $serializer)
+    public function setSerializer(?SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
         return $this;
     }
 
-    public function getSerializer(): /*?*/SerializerInterface
+    public function getSerializer(): ?SerializerInterface
     {
         return $this->serializer ?: new PassThru();
     }
