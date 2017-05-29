@@ -15,7 +15,7 @@ use Runn\Fs\Exceptions\FileNotWritable;
  * @package Runn\Fs
  */
 class File
-    implements FileAsStorageInterface
+    implements FileInterface, FileAsStorageInterface
 {
 
     use FileAsStorageTrait;
