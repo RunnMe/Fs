@@ -184,7 +184,22 @@ class File
         return $this;
     }
 
-    // mtime
+    /**
+     * @param bool $clearstatcache
+     * @return int
+     * @throws FileNotReadable
+     */
+    public function mtime($clearstatcache = true)
+    {
+        if (!$this->isReadable()) {
+            throw new FileNotReadable;
+        }
+        if ($clearstatcache) {
+            clearstatcache();
+        }
+        return filemtime($this->getPath());
+    }
+
     // passthru
 
 }

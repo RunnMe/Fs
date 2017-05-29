@@ -104,6 +104,10 @@ SAVED;
 <?php
 
 return Runn\Core\Std::__set_state([
+   '__notgetters' =>
+  [
+    0 => 'requiredKeys',
+  ],
    '__data' =>
   [
     'foo' => 'bar',
