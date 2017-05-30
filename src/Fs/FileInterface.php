@@ -2,8 +2,14 @@
 
 namespace Runn\Fs;
 
+/**
+ * Common interface for all files, dirs and links
+ *
+ * Interface FileInterface
+ * @package Runn\Fs
+ */
 interface FileInterface
-    //extends PathAwareInterface
+    extends PathAwareInterface
 {
 
     /**

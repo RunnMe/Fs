@@ -65,10 +65,10 @@ class FileMtimeTest extends \PHPUnit_Framework_TestCase
         $file->touch($time);
 
         $this->assertSame($time, $file->mtime());
+        $this->assertSame($time, $file->mtime(false));
 
         sleep(1);
         file_put_contents($filename, 'Test');
-        $this->assertSame($time, $file->mtime(false));
         $this->assertSame($time+1, $file->mtime());
 
         @unlink($filename);

@@ -18,6 +18,7 @@ class File
     implements FileInterface, FileAsStorageInterface
 {
 
+    use PathAwareTrait;
     use FileAsStorageTrait;
 
     /** @var string|null $path */
@@ -31,24 +32,6 @@ class File
         if (!empty($path)) {
             $this->setPath($path);
         }
-    }
-
-    /**
-     * @param string $path
-     * @return $this
-     */
-    public function setPath(string $path)
-    {
-        $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
     }
 
     /**
