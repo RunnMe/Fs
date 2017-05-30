@@ -1,6 +1,6 @@
 <?php
 
-namespace Runn\Fs;
+namespace Runn\Fs\Files;
 
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\Json;
@@ -9,7 +9,7 @@ use Runn\Serialization\Serializers\Json;
  * File with contents serialized into JSON
  *
  * Class JsonFile
- * @package Runn\Fs
+ * @package Runn\Fs\Files
  */
 class JsonFile
     extends FileWithSerializer

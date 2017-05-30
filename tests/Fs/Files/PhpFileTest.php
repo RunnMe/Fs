@@ -1,10 +1,10 @@
 <?php
 
-namespace Runn\tests\Fs\PhpFile;
+namespace Runn\tests\Fs\Files\PhpFile;
 
 use Runn\Core\Std;
 use Runn\Fs\Exceptions\FileNotReadable;
-use Runn\Fs\PhpFile;
+use Runn\Fs\Files\PhpFile;
 use Runn\Serialization\Serializers\PassThru;
 
 class PhpFileTest extends \PHPUnit_Framework_TestCase

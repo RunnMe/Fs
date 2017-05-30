@@ -1,6 +1,6 @@
 <?php
 
-namespace Runn\Fs;
+namespace Runn\Fs\Files;
 
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Serialization\SerializerInterface;
@@ -8,8 +8,9 @@ use Runn\Serialization\Serializers\Php;
 
 /**
  * File with contents serialized into PHP array
+ *
  * Class PhpFile
- * @package Runn\Fs
+ * @package Runn\Fs\Files
  */
 class PhpFile
     extends FileWithSerializer

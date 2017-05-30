@@ -1,8 +1,8 @@
 <?php
 
-namespace Runn\tests\Fs\JsonFile;
+namespace Runn\tests\Fs\Files\JsonFile;
 
-use Runn\Fs\JsonFile;
+use Runn\Fs\Files\JsonFile;
 use Runn\Serialization\Serializers\PassThru;
 
 class JsonFileTest extends \PHPUnit_Framework_TestCase
