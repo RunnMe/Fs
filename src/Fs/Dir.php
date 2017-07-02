@@ -102,6 +102,11 @@ class Dir
         return $this;
     }
 
+    /**
+     * @param int $order
+     * @return \Runn\Fs\FileCollection
+     * @throws \Runn\Fs\Exceptions\DirNotReadable
+     */
     public function list($order = \SCANDIR_SORT_NONE)
     {
         if (!$this->isReadable()) {
@@ -124,7 +129,19 @@ class Dir
      */
     public function mtime($clearstatcache = true)
     {
-        // TODO: Implement mtime() method.
+        $list = $this->list();
+
+        if ($list->empty()) {
+            if ($clearstatcache) {
+                clearstatcache(true, $this->getPath());
+            }
+            return @filemtime($this->getPath() . DIRECTORY_SEPARATOR . '.');
+        } else {
+            return $list->reduce(0, function ($acc, FileAbstract $el) use ($clearstatcache) {
+                $mtime = $el->mtime($clearstatcache);
+                return $mtime > $acc ? $mtime : $acc;
+            });
+        }
     }
 
 }
