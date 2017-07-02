@@ -103,24 +103,30 @@ class Dir
     }
 
     /**
-     * @param int $order
+     * @param boolean $recursive
      * @return \Runn\Fs\FileCollection
      * @throws \Runn\Fs\Exceptions\DirNotReadable
      */
-    public function list($order = \SCANDIR_SORT_NONE)
+    public function list($recursive = false)
     {
         if (!$this->isReadable()) {
             throw new DirNotReadable;
         }
         $path = $this->getPath();
-        return new FileCollection(
-            array_values(array_map(
-                function ($f) use ($path) {
-                    return FileAbstract::instance($path . DIRECTORY_SEPARATOR . $f);
-                },
-                array_diff(scandir($path, $order), ['.', '..'])
-            ))
-        );
+        $list = array_values(array_map(
+            function ($f) use ($path) {
+                return $path . DIRECTORY_SEPARATOR . $f;
+            },
+            array_diff(scandir($path), ['.', '..'])
+        ));
+        $ret = new FileCollection();
+        foreach ($list as $file) {
+            $ret[] = FileAbstract::instance($file);
+            if ($recursive && is_dir($file)) {
+                $ret->merge((new static($file))->list($recursive));
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -129,7 +135,7 @@ class Dir
      */
     public function mtime($clearstatcache = true)
     {
-        $list = $this->list();
+        $list = $this->list(true);
 
         if ($list->empty()) {
             if ($clearstatcache) {

@@ -54,7 +54,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
 
     public function testList()
     {
-        //var_dump((new Dir(__DIR__))->list());
+        //var_dump((new Dir(__DIR__))->list(true));
         //var_dump((new Dir(__DIR__))->mtime());
     }
 
