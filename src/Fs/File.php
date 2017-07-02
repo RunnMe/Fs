@@ -9,7 +9,8 @@ use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
 
 /**
- * File mapper
+ * File mapper class
+ * Represents one file (or dir or link)
  *
  * Class File
  * @package Runn\Fs
@@ -40,10 +41,10 @@ class File
      */
     public function exists(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
-        return file_exists($this->path);
+        return file_exists($this->getPath());
     }
 
     /**
@@ -53,13 +54,13 @@ class File
      */
     public function isFile(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
-        if (!file_exists($this->path)) {
+        if (!file_exists($this->getPath())) {
             throw new FileNotExists;
         }
-        return is_file($this->path);
+        return is_file($this->getPath());
     }
 
     /**
@@ -69,13 +70,13 @@ class File
      */
     public function isDir(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
-        if (!file_exists($this->path)) {
+        if (!file_exists($this->getPath())) {
             throw new FileNotExists;
         }
-        return is_dir($this->path);
+        return is_dir($this->getPath());
     }
 
     /**
@@ -85,13 +86,13 @@ class File
      */
     public function isLink(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
-        if (!file_exists($this->path)) {
+        if (!file_exists($this->getPath())) {
             throw new FileNotExists;
         }
-        return is_link($this->path);
+        return is_link($this->getPath());
     }
 
     /**
@@ -101,13 +102,13 @@ class File
      */
     public function isReadable(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
         if (!$this->exists()) {
             throw new FileNotExists;
         }
-        return is_readable($this->path);
+        return is_readable($this->getPath());
     }
 
     /**
@@ -117,13 +118,13 @@ class File
      */
     public function isWritable(): bool
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
         if (!$this->exists()) {
             throw new FileNotExists;
         }
-        return is_writable($this->path);
+        return is_writable($this->getPath());
     }
 
     /**
@@ -134,7 +135,7 @@ class File
      */
     public function touch($time = null)
     {
-        if (empty($this->path)) {
+        if (empty($this->getPath())) {
             throw new EmptyPath;
         }
 
@@ -143,9 +144,9 @@ class File
         }
 
         if (null === $time) {
-            $res = @touch($this->path);
+            $res = @touch($this->getPath());
         } else {
-            $res = @touch($this->path, $time);
+            $res = @touch($this->getPath(), $time);
         }
 
         if (false === $res) {
@@ -178,7 +179,7 @@ class File
             throw new FileNotReadable;
         }
         if ($clearstatcache) {
-            clearstatcache();
+            clearstatcache(true, $this->getPath());
         }
         return filemtime($this->getPath());
     }
