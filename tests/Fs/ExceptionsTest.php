@@ -3,6 +3,7 @@
 namespace Runn\tests\Fs\Exception;
 
 use Runn\Fs\Exception;
+use Runn\Fs\Exceptions\DirIsFile;
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileAlreadyExists;
 use Runn\Fs\Exceptions\FileIsDir;
@@ -61,6 +62,13 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $exception = new FileNotWritable();
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['FILE_NOT_WRITABLE']);
+    }
+
+    public function testDirIsFile()
+    {
+        $exception = new DirIsFile();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['DIR_IS_FILE']);
     }
 
 }

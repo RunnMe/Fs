@@ -24,6 +24,7 @@ abstract class Exception
         'FILE_IS_DIR'            => 7,
         'FILE_NULL_CONTENTS'     => 8,
         'FILE_DESERIALIZE_ERROR' => 9,
+        'DIR_IS_FILE'            => 10,
     ];
 
 }
