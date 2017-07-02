@@ -171,17 +171,23 @@ class File
     /**
      * @param bool $clearstatcache
      * @return int
-     * @throws FileNotReadable
+     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\FileNotExists
+     * @throws \Runn\Fs\Exceptions\FileNotReadable
      */
     public function mtime($clearstatcache = true)
     {
-        if (!$this->isReadable()) {
-            throw new FileNotReadable;
+        if (!$this->exists()) {
+            throw new FileNotExists;
         }
         if ($clearstatcache) {
             clearstatcache(true, $this->getPath());
         }
-        return filemtime($this->getPath());
+        $time = @filemtime($this->getPath());
+        if (false === $time) {
+            throw new FileNotReadable;
+        }
+        return $time;
     }
 
     // passthru
