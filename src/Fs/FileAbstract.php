@@ -4,6 +4,7 @@ namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileNotExists;
+use Runn\Fs\Exceptions\InvalidFileClass;
 
 /**
  * "Abstract" file
@@ -23,20 +24,26 @@ abstract class FileAbstract
      * @param string $path
      * @param string|null $class
      * @return static
+     * @throws \Runn\Fs\Exceptions\InvalidFileClass
      * @throws \Runn\Fs\Exceptions\FileNotExists
      */
     public static function instance($path, $class = null)
     {
-        if (file_exists($path)) {
-            if (is_file($path)) {
-                $class = $class ?? File::class;
-                return new $class($path);
-            } elseif (is_dir($path)) {
-                $class = $class ?? Dir::class;
-                return new $class($path);
-            }
+        if (null !== $class && !is_subclass_of($class, self::class)) {
+            throw new InvalidFileClass;
         }
-        throw new FileNotExists;
+
+        if (!file_exists($path)) {
+            throw new FileNotExists;
+        }
+
+        if (is_file($path)) {
+            $class = $class ?? File::class;
+            return new $class($path);
+        } elseif (is_dir($path)) {
+            $class = $class ?? Dir::class;
+            return new $class($path);
+        }
     }
 
     /**

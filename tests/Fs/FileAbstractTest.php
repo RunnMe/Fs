@@ -54,6 +54,14 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $file = FileAbstract::instance($this->getPath('file_not_exists'));
     }
 
+    /**
+     * @expectedException \Runn\Fs\Exceptions\InvalidFileClass
+     */
+    public function testFactoryFileInvalidClass()
+    {
+        $file = FileAbstract::instance($this->getPath('file_exists'), \stdClass::class);
+    }
+
     public function testFactoryFile()
     {
         $file = FileAbstract::instance($this->getPath('file_exists'));

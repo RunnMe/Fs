@@ -15,10 +15,18 @@ use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
 use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\InvalidFile;
+use Runn\Fs\Exceptions\InvalidFileClass;
 use Runn\Fs\Exceptions\MkDirError;
 
 class ExceptionsTest extends \PHPUnit_Framework_TestCase
 {
+
+    public function testInvalidFileClass()
+    {
+        $exception = new InvalidFileClass();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['INVALID_FILE_CLASS']);
+    }
 
     public function testEmptyPath()
     {

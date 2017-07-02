@@ -22,7 +22,6 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     * @expectedExceptionCode 1
      */
     public function testLoadEmpty()
     {
@@ -33,7 +32,6 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     * @expectedExceptionCode 3
      */
     public function testLoadNotExists()
     {
