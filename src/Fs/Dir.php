@@ -43,7 +43,7 @@ class Dir
      * @throws \Runn\Fs\Exceptions\MkDirError
      * @throws \Runn\Fs\Exceptions\DirTouchError
      */
-    public function touch($time = null, $createMode = 0777)
+    public function touch($time = null, $createMode = 0755)
     {
         if (empty($this->getPath())) {
             throw new EmptyPath();
@@ -80,7 +80,7 @@ class Dir
      * @param int $createMode
      * @return $this
      */
-    public function make($createMode = 0777)
+    public function make($createMode = 0755)
     {
         if ($this->exists()) {
             return $this;
@@ -93,7 +93,7 @@ class Dir
      * @return $this
      * @throws \Runn\Fs\Exceptions\DirAlreadyExists
      */
-    public function create($createMode = 0777)
+    public function create($createMode = 0755)
     {
         if ($this->exists()) {
             throw new DirAlreadyExists();
