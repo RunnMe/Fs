@@ -2,6 +2,8 @@
 
 namespace Runn\tests\Fs\FileAbstract;
 
+use Runn\Fs\Dir;
+use Runn\Fs\File;
 use Runn\Fs\FileAbstract;
 use Runn\Fs\FileInterface;
 use Runn\Fs\PathAwareInterface;
@@ -42,6 +44,40 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
     protected function getPath($case)
     {
         return $this->testCases[$case];
+    }
+
+    /**
+     * @expectedException \Runn\Fs\Exceptions\FileNotExists
+     */
+    public function testFactoryFileNotExists()
+    {
+        $file = FileAbstract::instance($this->getPath('file_not_exists'));
+    }
+
+    public function testFactoryFile()
+    {
+        $file = FileAbstract::instance($this->getPath('file_exists'));
+        $this->assertInstanceOf(File::class, $file);
+        $this->assertTrue($file->isFile());
+        $this->assertSame($this->getPath('file_exists'), $file->getPath());
+
+        $file = FileAbstract::instance($this->getPath('file_exists'), FakeFileClass::class);
+        $this->assertInstanceOf(FakeFileClass::class, $file);
+        $this->assertTrue($file->isFile());
+        $this->assertSame($this->getPath('file_exists'), $file->getPath());
+    }
+
+    public function testFactoryDir()
+    {
+        $file = FileAbstract::instance($this->getPath('dir_exists'));
+        $this->assertInstanceOf(Dir::class, $file);
+        $this->assertTrue($file->isDir());
+        $this->assertSame($this->getPath('dir_exists'), $file->getPath());
+
+        $file = FileAbstract::instance($this->getPath('dir_exists'), FakeFileClass::class);
+        $this->assertInstanceOf(FakeFileClass::class, $file);
+        $this->assertTrue($file->isDir());
+        $this->assertSame($this->getPath('dir_exists'), $file->getPath());
     }
 
     public function testConstructEmpty()

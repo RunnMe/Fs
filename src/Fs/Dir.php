@@ -111,7 +111,7 @@ class Dir
         return new FileCollection(
             array_values(array_map(
                 function ($f) use ($path) {
-                    return FileAbstract::factory($path . DIRECTORY_SEPARATOR . $f);
+                    return FileAbstract::instance($path . DIRECTORY_SEPARATOR . $f);
                 },
                 array_diff(scandir($path, $order), ['.', '..'])
             ))

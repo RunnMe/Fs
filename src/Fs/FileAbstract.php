@@ -19,7 +19,13 @@ abstract class FileAbstract
 
     use PathAwareTrait;
 
-    public static function factory($path, $class = null)
+    /**
+     * @param string $path
+     * @param string|null $class
+     * @return static
+     * @throws \Runn\Fs\Exceptions\FileNotExists
+     */
+    public static function instance($path, $class = null)
     {
         if (file_exists($path)) {
             if (is_file($path)) {
@@ -30,6 +36,7 @@ abstract class FileAbstract
                 return new $class($path);
             }
         }
+        throw new FileNotExists;
     }
 
     /**
