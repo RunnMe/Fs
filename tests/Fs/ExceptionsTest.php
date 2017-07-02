@@ -3,15 +3,19 @@
 namespace Runn\tests\Fs\Exception;
 
 use Runn\Fs\Exception;
+use Runn\Fs\Exceptions\DirAlreadyExists;
 use Runn\Fs\Exceptions\DirIsFile;
+use Runn\Fs\Exceptions\DirNotReadable;
+use Runn\Fs\Exceptions\DirTouchError;
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileAlreadyExists;
-use Runn\Fs\Exceptions\FileIsDir;
 use Runn\Fs\Exceptions\FileNotDeletable;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
+use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\InvalidFile;
+use Runn\Fs\Exceptions\MkDirError;
 
 class ExceptionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,13 +32,6 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $exception = new InvalidFile();
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['INVALID_FILE']);
-    }
-
-    public function testFileIsDir()
-    {
-        $exception = new FileIsDir();
-        $this->assertInstanceOf(Exception::class, $exception);
-        $this->assertSame($exception->getCode(), Exception::CODES['FILE_IS_DIR']);
     }
 
     public function testFileNotDeletable()
@@ -72,11 +69,39 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($exception->getCode(), Exception::CODES['FILE_NOT_WRITABLE']);
     }
 
-    public function testDirIsFile()
+    public function testInvalidDir()
     {
-        $exception = new DirIsFile();
+        $exception = new InvalidDir();
         $this->assertInstanceOf(Exception::class, $exception);
-        $this->assertSame($exception->getCode(), Exception::CODES['DIR_IS_FILE']);
+        $this->assertSame($exception->getCode(), Exception::CODES['INVALID_DIR']);
+    }
+
+    public function testMkDirError()
+    {
+        $exception = new MkDirError();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['MKDIR_ERROR']);
+    }
+
+    public function testDirAlreadyExists()
+    {
+        $exception = new DirAlreadyExists();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['DIR_ALREADY_EXISTS']);
+    }
+
+    public function testDirTouchError()
+    {
+        $exception = new DirTouchError();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['DIR_TOUCH_ERROR']);
+    }
+
+    public function testDirNotReadable()
+    {
+        $exception = new DirNotReadable();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['DIR_NOT_READABLE']);
     }
 
 }

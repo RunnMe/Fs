@@ -22,10 +22,13 @@ abstract class Exception
         'FILE_NOT_READABLE'      => 5,
         'FILE_NOT_WRITABLE'      => 6,
         'FILE_NOT_DELETABLE'     => 7,
-        'FILE_IS_DIR'            => 8,
-        'FILE_NULL_CONTENTS'     => 9,
-        'FILE_DESERIALIZE_ERROR' => 10,
-        'DIR_IS_FILE'            => 11,
+        'FILE_NULL_CONTENTS'     => 8,
+        'FILE_DESERIALIZE_ERROR' => 9,
+        'INVALID_DIR'            => 10,
+        'MKDIR_ERROR'            => 11,
+        'DIR_ALREADY_EXISTS'     => 12,
+        'DIR_TOUCH_ERROR'        => 13,
+        'DIR_NOT_READABLE'       => 14,
     ];
 
 }

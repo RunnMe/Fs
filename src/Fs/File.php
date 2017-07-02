@@ -11,7 +11,7 @@ use Runn\Fs\Exceptions\InvalidFile;
 
 /**
  * File mapper class
- * Represents one file (or dir or link)
+ * Represents one file
  *
  * Class File
  * @package Runn\Fs
@@ -35,6 +35,14 @@ class File
         }
         $this->path = $path;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDir(): bool
+    {
+        return false;
     }
 
     /**

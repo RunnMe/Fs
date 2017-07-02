@@ -8,6 +8,7 @@ use Runn\Fs\Exceptions\FileNotExists;
 /**
  * "Abstract" file
  * Contains methods that are common for files, dirs and links
+ * Includes factory method for files/dirs
  *
  * Class FileAbstract
  * @package Runn\Fs
@@ -17,6 +18,19 @@ abstract class FileAbstract
 {
 
     use PathAwareTrait;
+
+    public static function factory($path, $class = null)
+    {
+        if (file_exists($path)) {
+            if (is_file($path)) {
+                $class = $class ?? File::class;
+                return new $class($path);
+            } elseif (is_dir($path)) {
+                $class = $class ?? Dir::class;
+                return new $class($path);
+            }
+        }
+    }
 
     /**
      * @param string|null $path

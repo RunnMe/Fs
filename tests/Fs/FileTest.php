@@ -46,6 +46,8 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $file = new File($this->getPath('file_exists'));
         $this->assertInstanceOf(File::class, $file);
+        $this->assertTrue($file->isFile());
+        $this->assertFalse($file->isDir());
         $this->assertSame($this->getPath('file_exists'), $file->getPath());
     }
 
