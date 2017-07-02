@@ -33,7 +33,7 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     * @expectedExceptionCode 2
+     * @expectedExceptionCode 3
      */
     public function testLoadNotExists()
     {

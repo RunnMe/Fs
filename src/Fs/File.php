@@ -7,6 +7,7 @@ use Runn\Fs\Exceptions\FileAlreadyExists;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
+use Runn\Fs\Exceptions\InvalidFile;
 
 /**
  * File mapper class
@@ -16,115 +17,24 @@ use Runn\Fs\Exceptions\FileNotWritable;
  * @package Runn\Fs
  */
 class File
-    implements FileInterface, FileAsStorageInterface
+    extends FileAbstract
+    implements FileAsStorageInterface
 {
 
-    use PathAwareTrait;
     use FileAsStorageTrait;
 
-    /** @var string|null $path */
-    protected $path = null;
-
     /**
-     * @param string|null $path
+     * @param string $path
+     * @return $this
+     * @throws \Runn\Fs\Exceptions\InvalidFile
      */
-    public function __construct($path = null)
+    public function setPath(string $path)
     {
-        if (!empty($path)) {
-            $this->setPath($path);
+        if (file_exists($path) && !is_file($path)) {
+            throw new InvalidFile;
         }
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     */
-    public function exists(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        return file_exists($this->getPath());
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotExists
-     */
-    public function isFile(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        if (!file_exists($this->getPath())) {
-            throw new FileNotExists;
-        }
-        return is_file($this->getPath());
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotExists
-     */
-    public function isDir(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        if (!file_exists($this->getPath())) {
-            throw new FileNotExists;
-        }
-        return is_dir($this->getPath());
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotExists
-     */
-    public function isLink(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        if (!file_exists($this->getPath())) {
-            throw new FileNotExists;
-        }
-        return is_link($this->getPath());
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotExists
-     */
-    public function isReadable(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        if (!$this->exists()) {
-            throw new FileNotExists;
-        }
-        return is_readable($this->getPath());
-    }
-
-    /**
-     * @return bool
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotExists
-     */
-    public function isWritable(): bool
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-        if (!$this->exists()) {
-            throw new FileNotExists;
-        }
-        return is_writable($this->getPath());
+        $this->path = $path;
+        return $this;
     }
 
     /**

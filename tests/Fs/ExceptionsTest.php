@@ -11,6 +11,7 @@ use Runn\Fs\Exceptions\FileNotDeletable;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
+use Runn\Fs\Exceptions\InvalidFile;
 
 class ExceptionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,6 +21,13 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $exception = new EmptyPath();
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['EMPTY_PATH']);
+    }
+
+    public function testInvalidFile()
+    {
+        $exception = new InvalidFile();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['INVALID_FILE']);
     }
 
     public function testFileIsDir()

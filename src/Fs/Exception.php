@@ -16,15 +16,16 @@ abstract class Exception
 
     const CODES = [
         'EMPTY_PATH'             => 1,
-        'FILE_NOT_EXISTS'        => 2,
-        'FILE_ALREADY_EXISTS'    => 3,
-        'FILE_NOT_READABLE'      => 4,
-        'FILE_NOT_WRITABLE'      => 5,
-        'FILE_NOT_DELETABLE'     => 6,
-        'FILE_IS_DIR'            => 7,
-        'FILE_NULL_CONTENTS'     => 8,
-        'FILE_DESERIALIZE_ERROR' => 9,
-        'DIR_IS_FILE'            => 10,
+        'INVALID_FILE'           => 2,
+        'FILE_NOT_EXISTS'        => 3,
+        'FILE_ALREADY_EXISTS'    => 4,
+        'FILE_NOT_READABLE'      => 5,
+        'FILE_NOT_WRITABLE'      => 6,
+        'FILE_NOT_DELETABLE'     => 7,
+        'FILE_IS_DIR'            => 8,
+        'FILE_NULL_CONTENTS'     => 9,
+        'FILE_DESERIALIZE_ERROR' => 10,
+        'DIR_IS_FILE'            => 11,
     ];
 
 }

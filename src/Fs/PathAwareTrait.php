@@ -12,6 +12,7 @@ trait PathAwareTrait
     // implements PathAwareInterface
 {
 
+    /** @var string|null $path */
     protected $path = null;
 
     /**
