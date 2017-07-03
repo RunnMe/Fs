@@ -149,12 +149,6 @@ abstract class FileAbstract
     }
 
     /**
-     * @param \DateTimeInterface|int|null $time
-     * @return $this
-     */
-    abstract public function touch($time = null);
-
-    /**
      * @return $this
      */
     abstract public function create();

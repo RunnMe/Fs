@@ -4,8 +4,6 @@ namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\DirAlreadyExists;
 use Runn\Fs\Exceptions\DirNotReadable;
-use Runn\Fs\Exceptions\DirTouchError;
-use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\MkDirError;
 
@@ -36,43 +34,21 @@ class Dir
     }
 
     /**
-     * @param \DateTimeInterface|int|null $time
-     * @return $this
      * @param int $createMode
+     * @return $this
      * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\DirAlreadyExists
      * @throws \Runn\Fs\Exceptions\MkDirError
-     * @throws \Runn\Fs\Exceptions\DirTouchError
      */
-    public function touch($time = null, $createMode = 0755)
+    public function create(int $createMode = 0755)
     {
-        if (empty($this->getPath())) {
-            throw new EmptyPath();
+        if ($this->exists()) {
+            throw new DirAlreadyExists();
         }
-
-        $created = false;
-        if (!$this->exists()) {
-            $res = @mkdir($this->getPath(), $createMode, true);
-            if (false === $res) {
-                throw new MkDirError;
-            }
-            $created = true;
-        }
-
-        if ($time instanceof \DateTimeInterface) {
-            $time = $time->getTimestamp();
-        }
-
-        $res = true;
-        if (null === $time && !$created) {
-            $res = @touch($this->getPath());
-        } else {
-            $res = @touch($this->getPath(), $time);
-        }
-
+        $res = @mkdir($this->getPath(), $createMode, true);
         if (false === $res) {
-            throw new DirTouchError;
+            throw new MkDirError;
         }
-
         return $this;
     }
 
@@ -80,25 +56,12 @@ class Dir
      * @param int $createMode
      * @return $this
      */
-    public function make($createMode = 0755)
+    public function make(int $createMode = 0755)
     {
         if ($this->exists()) {
             return $this;
         }
-        return $this->touch(null, $createMode);
-    }
-
-    /**
-     * @param int $createMode
-     * @return $this
-     * @throws \Runn\Fs\Exceptions\DirAlreadyExists
-     */
-    public function create($createMode = 0755)
-    {
-        if ($this->exists()) {
-            throw new DirAlreadyExists();
-        }
-        $this->make($createMode);
+        $this->create($createMode);
         return $this;
     }
 
@@ -107,7 +70,7 @@ class Dir
      * @return \Runn\Fs\FileCollection
      * @throws \Runn\Fs\Exceptions\DirNotReadable
      */
-    public function list($recursive = false)
+    public function list(bool $recursive = false)
     {
         if (!$this->isReadable()) {
             throw new DirNotReadable;
@@ -136,7 +99,6 @@ class Dir
     public function mtime($clearstatcache = true)
     {
         $list = $this->list(true);
-
         if ($list->empty()) {
             if ($clearstatcache) {
                 clearstatcache(true, $this->getPath());

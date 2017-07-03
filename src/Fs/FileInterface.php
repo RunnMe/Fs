@@ -43,12 +43,6 @@ interface FileInterface
     public function isWritable(): bool;
 
     /**
-     * @param \DateTimeInterface|int|null $time
-     * @return $this
-     */
-    public function touch($time = null);
-
-    /**
      * @return $this
      */
     public function create();
