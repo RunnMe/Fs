@@ -19,4 +19,15 @@ class FileCollection
         return FileAbstract::class;
     }
 
+    /**
+     * @param string $prefix
+     * @return array
+     */
+    public function getPaths($prefix = '')
+    {
+        return $this->collect(function (FileAbstract $file) use ($prefix) {
+            return $file->getPath($prefix);
+        });
+    }
+
 }
