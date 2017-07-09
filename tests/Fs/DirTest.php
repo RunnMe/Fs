@@ -3,6 +3,7 @@
 namespace Runn\tests\Fs\Dir;
 
 use Runn\Fs\Dir;
+use Runn\Fs\File;
 use Runn\Fs\FileCollection;
 
 class DirTest extends \PHPUnit_Framework_TestCase
@@ -24,6 +25,19 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->testCases['list'][2] = sys_get_temp_dir() . '/list/2';
         mkdir($this->testCases['list'][2] . '/21' , 0777, true);
         mkdir($this->testCases['list'][2] . '/22' , 0777, true);
+
+        $this->testCases['list'][3] = sys_get_temp_dir() . '/list/3';
+        mkdir($this->testCases['list'][3] . '/31' , 0777, true);
+        mkdir($this->testCases['list'][3] . '/32' , 0777, true);
+        touch($this->testCases['list'][3] . '/33');
+
+        $this->testCases['list'][4] = sys_get_temp_dir() . '/list/4';
+        mkdir($this->testCases['list'][4] . '/41/1' , 0777, true);
+        mkdir($this->testCases['list'][4] . '/41/2' , 0777, true);
+        mkdir($this->testCases['list'][4] . '/42/2' , 0777, true);
+        touch($this->testCases['list'][4] . '/42/1');
+        mkdir($this->testCases['list'][4] . '/43' , 0777, true);
+        touch($this->testCases['list'][4] . '/44');
     }
 
     protected function getPath($case)
@@ -93,9 +107,60 @@ class DirTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(new FileCollection($subdirs), $dir->list(true));
     }
+    public function testListWithSubDirsAndFiles()
+    {
+        $dir = new Dir(realpath($this->getPath('list')[3]));
+
+        $subs = [
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '31'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '32'),
+            new File($dir->getPath() . DIRECTORY_SEPARATOR . '33'),
+        ];
+
+        $this->assertEquals(new FileCollection($subs), $dir->list());
+        $this->assertEquals(new FileCollection($subs), $dir->list(false));
+
+        $this->assertEquals(new FileCollection($subs ), $dir->list(true));
+    }
+
+    public function testListRecursive()
+    {
+        $dir = new Dir(realpath($this->getPath('list')[4]));
+
+        $subs = [
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '41'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '41' . DIRECTORY_SEPARATOR . '1'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '41' . DIRECTORY_SEPARATOR . '2'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '42'),
+            new File($dir->getPath() . DIRECTORY_SEPARATOR .  '42' . DIRECTORY_SEPARATOR . '1'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR .  '42' . DIRECTORY_SEPARATOR . '2'),
+            new Dir($dir->getPath() . DIRECTORY_SEPARATOR . '43'),
+            new File($dir->getPath() . DIRECTORY_SEPARATOR . '44'),
+        ];
+
+        $this->assertEquals(new FileCollection([$subs[0], $subs[3], $subs[6], $subs[7]]), $dir->list());
+        $this->assertEquals(new FileCollection([$subs[0], $subs[3], $subs[6], $subs[7]]), $dir->list(false));
+
+        $this->assertEquals(new FileCollection($subs ), $dir->list(true));
+    }
 
     protected function tearDown()
     {
+        unlink($this->testCases['list'][4] . '/44');
+        rmdir($this->testCases['list'][4] . '/43');
+        rmdir($this->testCases['list'][4] . '/42/2');
+        unlink($this->testCases['list'][4] . '/42/1');
+        rmdir($this->testCases['list'][4] . '/42');
+        rmdir($this->testCases['list'][4] . '/41/1');
+        rmdir($this->testCases['list'][4] . '/41/2');
+        rmdir($this->testCases['list'][4] . '/41');
+        rmdir($this->testCases['list'][4]);
+
+        unlink($this->testCases['list'][3] . '/33');
+        rmdir($this->testCases['list'][3] . '/32');
+        rmdir($this->testCases['list'][3] . '/31');
+        rmdir($this->testCases['list'][3]);
+
         rmdir($this->testCases['list'][2] . '/22');
         rmdir($this->testCases['list'][2] . '/21');
         rmdir($this->testCases['list'][2]);
