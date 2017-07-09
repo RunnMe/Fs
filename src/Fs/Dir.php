@@ -69,35 +69,28 @@ class Dir
 
     /**
      * @param boolean $recursive
-     * @param string $prefix
      * @return FileCollection
      * @throws DirNotReadable
      */
-    public function list(bool $recursive = false, string $prefix = '')
+    public function list(bool $recursive = false)
     {
         if (!$this->isReadable()) {
             throw new DirNotReadable;
         }
-        if (!empty($prefix)) {
-            $prefix = (string)@realpath($prefix);
-        }
         $path = realpath($this->getPath());
-        if (!empty($prefix) && 0 === strpos($path, $prefix)) {
-            $path = substr($path, strlen($prefix));
-        }
 
         $list = array_values(array_map(
             function ($f) use ($path) {
                 return $path . DIRECTORY_SEPARATOR . $f;
             },
-            array_diff(scandir($prefix . $path), ['.', '..'])
+            array_diff(scandir($path), ['.', '..'])
         ));
 
         $ret = new FileCollection();
         foreach ($list as $file) {
-            $ret[] = FileAbstract::instance($file, is_dir($prefix . $file) ? Dir::class : File::class);
-            if ($recursive && is_dir($prefix . $file)) {
-                $ret->merge((new static($prefix . $file, $prefix))->list($recursive));
+            $ret[] = FileAbstract::instance($file);
+            if ($recursive && is_dir($file)) {
+                $ret->merge((new static($file))->list($recursive));
             }
         }
 

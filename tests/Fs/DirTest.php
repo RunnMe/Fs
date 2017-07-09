@@ -75,40 +75,23 @@ class DirTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(new FileCollection(), $dir->list());
         $this->assertEquals(new FileCollection(), $dir->list(false));
-        $this->assertEquals(new FileCollection(), $dir->list(false, ''));
-        $this->assertEquals(new FileCollection(), $dir->list(false, sys_get_temp_dir()));
 
         $this->assertEquals(new FileCollection(), $dir->list(true));
-        $this->assertEquals(new FileCollection(), $dir->list(true, ''));
-        $this->assertEquals(new FileCollection(), $dir->list(true, 'foo'));
-        $this->assertEquals(new FileCollection(), $dir->list(true, sys_get_temp_dir()));
     }
 
     public function testListWithSubDirs()
     {
         $dir = new Dir(realpath($this->getPath('list')[2]));
         
-        $pathpostfix = substr($dir->getPath(), strlen(sys_get_temp_dir()));
-
         $subdirs = [
             new Dir($dir->getPath() . DIRECTORY_SEPARATOR . '21'),
             new Dir($dir->getPath() . DIRECTORY_SEPARATOR . '22'),
         ];
-        
-        $subdirspostfixed = [
-            new Dir($pathpostfix . DIRECTORY_SEPARATOR . '21'),
-            new Dir($pathpostfix . DIRECTORY_SEPARATOR . '22'),
-        ];
 
         $this->assertEquals(new FileCollection($subdirs), $dir->list());
         $this->assertEquals(new FileCollection($subdirs), $dir->list(false));
-        $this->assertEquals(new FileCollection($subdirs), $dir->list(false, ''));
-        $this->assertEquals(new FileCollection($subdirspostfixed), $dir->list(false, sys_get_temp_dir()));
 
         $this->assertEquals(new FileCollection($subdirs), $dir->list(true));
-        $this->assertEquals(new FileCollection($subdirs), $dir->list(true, ''));
-        $this->assertEquals(new FileCollection($subdirs), $dir->list(true, 'foo'));
-        $this->assertEquals(new FileCollection($subdirspostfixed), $dir->list(true, sys_get_temp_dir()));
     }
 
     protected function tearDown()
