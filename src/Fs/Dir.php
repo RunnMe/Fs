@@ -13,11 +13,13 @@ class Dir
 
     /**
      * @param string $path
+     * @param string $prefix
      * @return $this
      * @throws \Runn\Fs\Exceptions\InvalidDir
      */
-    public function setPath(string $path)
+    public function setPath(string $path, string $prefix = '')
     {
+        $path = $prefix . $path;
         if (file_exists($path) && !is_dir($path)) {
             throw new InvalidDir;
         }
@@ -67,28 +69,38 @@ class Dir
 
     /**
      * @param boolean $recursive
-     * @return \Runn\Fs\FileCollection
-     * @throws \Runn\Fs\Exceptions\DirNotReadable
+     * @param string $prefix
+     * @return FileCollection
+     * @throws DirNotReadable
      */
-    public function list(bool $recursive = false)
+    public function list(bool $recursive = false, string $prefix = '')
     {
         if (!$this->isReadable()) {
             throw new DirNotReadable;
         }
-        $path = $this->getPath();
+        if (!empty($prefix)) {
+            $prefix = (string)@realpath($prefix);
+        }
+        $path = realpath($this->getPath());
+        if (!empty($prefix) && 0 === strpos($path, $prefix)) {
+            $path = substr($path, strlen($prefix));
+        }
+
         $list = array_values(array_map(
             function ($f) use ($path) {
                 return $path . DIRECTORY_SEPARATOR . $f;
             },
-            array_diff(scandir($path), ['.', '..'])
+            array_diff(scandir($prefix . $path), ['.', '..'])
         ));
+
         $ret = new FileCollection();
         foreach ($list as $file) {
-            $ret[] = FileAbstract::instance($file);
-            if ($recursive && is_dir($file)) {
-                $ret->merge((new static($file))->list($recursive));
+            $ret[] = FileAbstract::instance($file, is_dir($prefix . $file) ? Dir::class : File::class);
+            if ($recursive && is_dir($prefix . $file)) {
+                $ret->merge((new static($prefix . $file, $prefix))->list($recursive));
             }
         }
+
         return $ret;
     }
 

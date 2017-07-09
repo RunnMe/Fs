@@ -25,11 +25,13 @@ class File
 
     /**
      * @param string $path
+     * @param string $prefix
      * @return $this
      * @throws \Runn\Fs\Exceptions\InvalidFile
      */
-    public function setPath(string $path)
+    public function setPath(string $path, string $prefix = '')
     {
+        $path = $prefix . $path;
         if (file_exists($path) && !is_file($path)) {
             throw new InvalidFile;
         }

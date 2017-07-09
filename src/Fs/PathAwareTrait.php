@@ -12,24 +12,29 @@ trait PathAwareTrait
     // implements PathAwareInterface
 {
 
-    /** @var string|null $path */
-    protected $path = null;
+    /** @var string $path */
+    protected $path = '';
 
     /**
      * @param string $path
+     * @param string $prefix
      * @return $this
      */
-    public function setPath(string $path)
+    public function setPath(string $path, string $prefix = '')
     {
-        $this->path = $path;
+        $this->path = $prefix . $path;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @param string $prefix
+     * @return string
      */
-    public function getPath()/*: ?string*/
+    public function getPath(string $prefix = ''): string
     {
+        if (!empty($prefix) && 0 === strpos($this->path, $prefix)) {
+            return substr($this->path, strlen($prefix));
+        }
         return $this->path;
     }
 

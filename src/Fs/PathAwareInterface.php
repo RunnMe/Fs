@@ -11,13 +11,15 @@ interface PathAwareInterface
 
     /**
      * @param string $path
+     * @param string $prefix
      * @return $this
      */
-    public function setPath(string $path);
+    public function setPath(string $path, string $prefix = '');
 
     /**
-     * @return string|null
+     * @param string $prefix
+     * @return string
      */
-    public function getPath()/*: ?string*/;
+    public function getPath(string $prefix = ''): string;
 
 }

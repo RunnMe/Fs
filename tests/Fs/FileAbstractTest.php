@@ -94,7 +94,7 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(FileInterface::class, $file);
         $this->assertInstanceOf(PathAwareInterface::class, $file);
         $this->assertInstanceOf(FileAbstract::class, $file);
-        $this->assertNull($file->getPath());
+        $this->assertSame('', $file->getPath());
     }
 
     public function testSetGetPath()
