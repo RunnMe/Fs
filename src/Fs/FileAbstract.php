@@ -33,11 +33,7 @@ abstract class FileAbstract
             throw new InvalidFileClass;
         }
 
-        if (!file_exists($path)) {
-            throw new FileNotExists;
-        }
-
-        if (is_file($path)) {
+        if (!file_exists($path) || is_file($path)) {
             $class = $class ?? File::class;
             return new $class($path);
         } elseif (is_dir($path)) {
@@ -54,6 +50,14 @@ abstract class FileAbstract
         if (!empty($path)) {
             $this->setPath($path);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getPath() ?? '';
     }
 
     /**

@@ -46,12 +46,12 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         return $this->testCases[$case];
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testFactoryFileNotExists()
     {
         $file = FileAbstract::instance($this->getPath('file_not_exists'));
+        $this->assertInstanceOf(File::class, $file);
+        $this->assertSame($this->getPath('file_not_exists'), $file->getPath());
+        $this->assertFalse($file->exists());
     }
 
     /**
@@ -108,6 +108,14 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $file = new FakeFileClass;
         $file->setPath($path2);
         $this->assertSame($path2, $file->getPath());
+    }
+
+    public function testToString()
+    {
+        $randomPath = md5(time());
+        $file = new FakeFileClass($randomPath);
+        $this->assertSame(md5(time()), $file->getPath());
+        $this->assertSame((string)$file, $file->getPath());
     }
 
     /**

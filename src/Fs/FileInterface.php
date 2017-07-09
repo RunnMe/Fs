@@ -13,6 +13,11 @@ interface FileInterface
 {
 
     /**
+     * @return string
+     */
+    public function __toString();
+
+    /**
      * @return bool
      */
     public function exists(): bool;
