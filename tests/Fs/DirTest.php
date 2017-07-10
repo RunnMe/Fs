@@ -23,20 +23,20 @@ class DirTest extends \PHPUnit_Framework_TestCase
         mkdir($this->testCases['list'][1], 0777, true);
 
         $this->testCases['list'][2] = sys_get_temp_dir() . '/list/2';
-        mkdir($this->testCases['list'][2] . '/21' , 0777, true);
-        mkdir($this->testCases['list'][2] . '/22' , 0777, true);
+        mkdir($this->testCases['list'][2] . '/21', 0777, true);
+        mkdir($this->testCases['list'][2] . '/22', 0777, true);
 
         $this->testCases['list'][3] = sys_get_temp_dir() . '/list/3';
-        mkdir($this->testCases['list'][3] . '/31' , 0777, true);
-        mkdir($this->testCases['list'][3] . '/32' , 0777, true);
+        mkdir($this->testCases['list'][3] . '/31', 0777, true);
+        mkdir($this->testCases['list'][3] . '/32', 0777, true);
         touch($this->testCases['list'][3] . '/33');
 
         $this->testCases['list'][4] = sys_get_temp_dir() . '/list/4';
-        mkdir($this->testCases['list'][4] . '/41/1' , 0777, true);
-        mkdir($this->testCases['list'][4] . '/41/2' , 0777, true);
-        mkdir($this->testCases['list'][4] . '/42/2' , 0777, true);
+        mkdir($this->testCases['list'][4] . '/41/1', 0777, true);
+        mkdir($this->testCases['list'][4] . '/41/2', 0777, true);
+        mkdir($this->testCases['list'][4] . '/42/2', 0777, true);
         touch($this->testCases['list'][4] . '/42/1');
-        mkdir($this->testCases['list'][4] . '/43' , 0777, true);
+        mkdir($this->testCases['list'][4] . '/43', 0777, true);
         touch($this->testCases['list'][4] . '/44');
     }
 
@@ -71,6 +71,31 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($dir->isFile());
         $this->assertTrue($dir->isDir());
         $this->assertSame($this->getPath('dir_exists'), $dir->getPath());
+    }
+
+    /**
+     * @expectedException \Runn\Fs\Exceptions\DirAlreadyExists
+     */
+    public function testCreateAlreadyExists()
+    {
+        $dir = new Dir($this->getPath('dir_exists'));
+        $dir->create();
+        $this->fail();
+    }
+
+    public function testCreate()
+    {
+        $path = sys_get_temp_dir() . '/DirCreateTest';
+
+        $dir = new Dir($path);
+        $this->assertFalse($dir->exists());
+
+        $res = $dir->create();
+        $this->assertTrue($dir->exists());
+        $this->assertTrue($dir->isDir());
+        $this->assertSame($dir, $res);
+
+        rmdir($path);
     }
 
     /**
