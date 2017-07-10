@@ -51,6 +51,7 @@ class Dir
         if (false === $res) {
             throw new MkDirError;
         }
+        @chmod($this->getPath(), $createMode);
         return $this;
     }
 
@@ -103,14 +104,16 @@ class Dir
      */
     public function mtime($clearstatcache = true)
     {
+        $self = @filemtime($this->getPath() . DIRECTORY_SEPARATOR . '.');
         $list = $this->list(true);
+
         if ($list->empty()) {
             if ($clearstatcache) {
                 clearstatcache(true, $this->getPath());
             }
-            return @filemtime($this->getPath() . DIRECTORY_SEPARATOR . '.');
+            return $self;
         } else {
-            return $list->reduce(0, function ($acc, FileAbstract $el) use ($clearstatcache) {
+            return $list->reduce($self, function ($acc, FileAbstract $el) use ($clearstatcache) {
                 $mtime = $el->mtime($clearstatcache);
                 return $mtime > $acc ? $mtime : $acc;
             });
