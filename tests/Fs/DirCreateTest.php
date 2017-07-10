@@ -22,7 +22,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAlreadyExists()
     {
-        $dirname = sys_get_temp_dir() . '/FsTest_create';
+        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
         mkdir($dirname);
 
         try {
@@ -39,10 +39,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateValid()
     {
-        $dirname = sys_get_temp_dir() . '/FsTest_create';
-        if (file_exists($dirname)) {
-            rmdir($dirname);
-        }
+        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
         $this->assertDirectoryNotExists($dirname);
 
         $dir = new Dir($dirname);
@@ -61,14 +58,11 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateValidWithMode()
     {
-        $dirname = sys_get_temp_dir() . '/FsTest_create';
-        if (file_exists($dirname)) {
-            rmdir($dirname);
-        }
+        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
         $this->assertDirectoryNotExists($dirname);
 
-        $dir = new Dir($dirname, 0777);
-        $ret = $dir->create();
+        $dir = new Dir($dirname);
+        $ret = $dir->create(0777);
 
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($dirname);
