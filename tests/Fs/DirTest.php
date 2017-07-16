@@ -3,6 +3,7 @@
 namespace Runn\tests\Fs\Dir;
 
 use Runn\Fs\Dir;
+use Runn\Fs\Exceptions\DirNotReadable;
 use Runn\Fs\File;
 use Runn\Fs\FileCollection;
 
@@ -116,6 +117,28 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new FileCollection(), $dir->list(false));
 
         $this->assertEquals(new FileCollection(), $dir->list(true));
+    }
+
+    public function testListNotReadableDir()
+    {
+        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
+        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+            return;
+        }
+
+        $path = $this->getPath('list')[1];
+        chmod($path, 0000);
+
+        try {
+
+            $dir = new Dir($path);
+            $dir->list();
+
+        } catch (DirNotReadable $e) {
+            return;
+        } finally {
+            chmod($path, 0777);
+        }
     }
 
     public function testListWithSubDirs()
