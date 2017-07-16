@@ -18,6 +18,7 @@ abstract class Exception
         'INVALID_FILE_CLASS'     => 1,
         'EMPTY_PATH'             => 2,
         'SYMLINK_ERROR'          => 3,
+        'COPY_ERROR'             => 4,
 
         'INVALID_FILE'           => 101,
         'FILE_NOT_EXISTS'        => 102,

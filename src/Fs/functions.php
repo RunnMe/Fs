@@ -19,7 +19,7 @@ function isWindows()
 function canCp()
 {
     if (!isWindows()) {
-        exec('cp --help 2>/dev/null', $out, $code);
+        exec('\\cp --help 2>/dev/null', $out, $code);
         if (0 === $code) {
             return true;
         }

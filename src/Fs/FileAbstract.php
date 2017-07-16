@@ -2,6 +2,7 @@
 
 namespace Runn\Fs;
 
+use Runn\Fs\Exceptions\CopyError;
 use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileNotExists;
@@ -228,13 +229,34 @@ abstract class FileAbstract
     /**
      * @param \Runn\Fs\Dir $dir
      * @param string|null $targetName
-     * @return self
+     * @return \Runn\Fs\FileInterface
+     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\FileNotExists
+     * @throws \Runn\Fs\Exceptions\DirNotExists
+     * @throws \Runn\Fs\Exceptions\CopyError
      */
     public function copyInto(Dir $dir, string $targetName = null): FileInterface
     {
+        if (!$this->exists()) {
+            throw new FileNotExists;
+        }
+        if (!$dir->exists()) {
+            throw new DirNotExists;
+        }
+        $targetName = $targetName ?: basename($this->getPath());
+        $targetPath = $dir->getPath() . DIRECTORY_SEPARATOR . $targetName;
+
+        if (file_exists($targetPath)) {
+            if ($this->isFile() && is_dir($targetPath)) {
+                throw new CopyError('Target exists and is dir instead of file');
+            }
+            if ($this->isDir() && is_file($targetPath)) {
+                throw new CopyError('Target exists and is file instead of dir');
+            }
+        }
+
         return $this;
     }
-
 
     /**
      * @param bool $clearstatcache
