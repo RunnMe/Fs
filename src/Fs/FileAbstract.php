@@ -255,7 +255,29 @@ abstract class FileAbstract
             }
         }
 
-        return $this;
+        try {
+
+            if (canCp()) {
+                //exec('\\cp ' . $this->getPath(). '2>/dev/null', $out, $code);
+            } elseif (canXcopy()) {
+
+                $cmd = 'xcopy "' . $this->getPath(). '" "' . $targetPath . '" /i /s /e /h /r /y 2>/NUL';
+                if ($this->isFile()) {
+                    $cmd = 'echo F | ' . $cmd;
+                }
+                exec($cmd, $out, $code);
+                if (0 !== $code) {
+                    throw new CopyError('xcopy command error');
+                }
+
+            }
+
+        } catch (CopyError $e) {
+            // @todo: php copy
+            throw $e;
+        }
+
+        return self::instance($targetPath);
     }
 
     /**

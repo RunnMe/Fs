@@ -2,10 +2,9 @@
 
 namespace Runn\tests\Fs\FileAbstract;
 
+use function Runn\Fs\canXcopy;
 use Runn\Fs\Dir;
 use Runn\Fs\Exceptions\CopyError;
-use Runn\Fs\Exceptions\SymlinkError;
-use Runn\Fs\File;
 use Runn\Fs\FileAbstract;
 
 class FakeFileCopyToClass extends FileAbstract
@@ -108,6 +107,30 @@ class FileAbstractCopyIntoTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->fail();
+    }
+
+    public function testXcopyFile()
+    {
+        if (!canXcopy()) {
+            return;
+        }
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsCopyTest');
+        $target1 = $path . DIRECTORY_SEPARATOR . basename(__FILE__);
+        $target2 = $path . DIRECTORY_SEPARATOR . 'test.file';
+        mkdir($path);
+
+        $file = new FakeFileCopyToClass(__FILE__);
+
+        $file->copyInto(new Dir($path));
+        $this->assertFileEquals(__FILE__, $target1);
+
+        $file->copyInto(new Dir($path), 'test.file');
+        $this->assertFileEquals(__FILE__, $target2);
+
+        unlink($target2);
+        unlink($target1);
+        rmdir($path);
     }
 
 }
