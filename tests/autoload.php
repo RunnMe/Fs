@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-require __DIR__ . '/../src/Fs/functions.php';
+require_once __DIR__ . '/../src/Fs/functions.php';
 
 spl_autoload_register(function ($class) {
     if (0 === strpos($class, 'Runn\\')) {
