@@ -59,6 +59,20 @@ interface FileInterface
     public function touch($time = null);
 
     /**
+     * @param \Runn\Fs\Dir $dir
+     * @param string|null $targetName
+     * @return self
+     */
+    public function linkInto(Dir $dir, string $targetName = null): FileInterface;
+
+    /**
+     * @param \Runn\Fs\Dir $dir
+     * @param string|null $targetName
+     * @return self
+     */
+    public function copyInto(Dir $dir, string $targetName = null): FileInterface;
+
+    /**
      * @param bool $clearstatcache
      * @return int
      */

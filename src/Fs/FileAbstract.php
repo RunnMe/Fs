@@ -7,6 +7,7 @@ use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotWritable;
 use Runn\Fs\Exceptions\InvalidFileClass;
+use Runn\Fs\Exceptions\SymlinkError;
 
 /**
  * "Abstract" file
@@ -191,6 +192,49 @@ abstract class FileAbstract
         }
         return $this;
     }
+
+    /**
+     * @param \Runn\Fs\Dir $dir
+     * @param string|null $targetName
+     * @return \Runn\Fs\FileInterface
+     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\FileNotExists
+     * @throws \Runn\Fs\Exceptions\DirNotExists
+     * @throws \Runn\Fs\Exceptions\SymlinkError
+     */
+    public function linkInto(Dir $dir, string $targetName = null): FileInterface
+    {
+        if (!$this->exists()) {
+            throw new FileNotExists;
+        }
+        if (!$dir->exists()) {
+            throw new DirNotExists;
+        }
+        $targetName = $targetName ?: basename($this->getPath());
+        $targetPath = $dir->getPath() . DIRECTORY_SEPARATOR . $targetName;
+
+        if (file_exists($targetPath) && !is_link($targetPath)) {
+            throw new SymlinkError;
+        }
+
+        $res = @symlink($this->getPath(), $targetPath);
+        if (false === $res) {
+            throw new SymlinkError;
+        }
+
+        return self::instance($targetPath);
+    }
+
+    /**
+     * @param \Runn\Fs\Dir $dir
+     * @param string|null $targetName
+     * @return self
+     */
+    public function copyInto(Dir $dir, string $targetName = null): FileInterface
+    {
+        return $this;
+    }
+
 
     /**
      * @param bool $clearstatcache

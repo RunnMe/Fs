@@ -17,6 +17,7 @@ abstract class Exception
     const CODES = [
         'INVALID_FILE_CLASS'     => 1,
         'EMPTY_PATH'             => 2,
+        'SYMLINK_ERROR'          => 3,
 
         'INVALID_FILE'           => 101,
         'FILE_NOT_EXISTS'        => 102,

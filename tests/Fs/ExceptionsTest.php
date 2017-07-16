@@ -18,6 +18,7 @@ use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\InvalidFile;
 use Runn\Fs\Exceptions\InvalidFileClass;
 use Runn\Fs\Exceptions\MkDirError;
+use Runn\Fs\Exceptions\SymlinkError;
 
 class ExceptionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,6 +35,13 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $exception = new EmptyPath();
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['EMPTY_PATH']);
+    }
+
+    public function testSymlinkError()
+    {
+        $exception = new SymlinkError();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['SYMLINK_ERROR']);
     }
 
     public function testInvalidFile()
