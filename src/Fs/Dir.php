@@ -3,6 +3,7 @@
 namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\DirAlreadyExists;
+use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\DirNotReadable;
 use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\MkDirError;
@@ -100,17 +101,29 @@ class Dir
 
     /**
      * @param bool $clearstatcache
+     * @param bool $only Only own directory's mtime, no-recursive
      * @return int
+     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\DirNotExists
+     * @throws \Runn\Fs\Exceptions\DirNotReadable
      */
-    public function mtime($clearstatcache = true)
+    public function mtime($clearstatcache = true, $only = false)
     {
-        $self = @filemtime($this->getPath() . DIRECTORY_SEPARATOR . '.');
-        $list = $this->list(true);
+        if (!$this->exists()) {
+            throw new DirNotExists;
+        }
 
-        if ($list->empty()) {
-            if ($clearstatcache) {
-                clearstatcache(true, $this->getPath());
-            }
+        if (!$this->isReadable()) {
+            throw new DirNotReadable;
+        }
+
+        if ($clearstatcache) {
+            clearstatcache(true, $this->getPath());
+        }
+
+        $self = @filemtime($this->getPath() . DIRECTORY_SEPARATOR . '.');
+
+        if ( $only || ($list = $this->list(true))->empty() ) {
             return $self;
         } else {
             return $list->reduce($self, function ($acc, FileAbstract $el) use ($clearstatcache) {
