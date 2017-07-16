@@ -4,6 +4,8 @@ namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileNotExists;
+use Runn\Fs\Exceptions\FileNotWritable;
+use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\InvalidFileClass;
 
 /**
@@ -156,6 +158,39 @@ abstract class FileAbstract
      * @return $this
      */
     abstract public function create();
+
+    /**
+     * @param \DateTimeInterface|int|null $time
+     * @return $this
+     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws \Runn\Fs\Exceptions\InvalidDir
+     * @throws \Runn\Fs\Exceptions\FileNotWritable
+     */
+    public function touch($time = null)
+    {
+        if (empty($this->getPath())) {
+            throw new EmptyPath;
+        }
+
+        if ( ($this instanceof Dir) && !$this->exists() ) {
+            throw new InvalidDir;
+        }
+
+        if ($time instanceof \DateTimeInterface) {
+            $time = $time->getTimestamp();
+        }
+
+        if (null === $time) {
+            $res = @touch($this->getPath());
+        } else {
+            $res = @touch($this->getPath(), $time);
+        }
+
+        if (false === $res) {
+            throw new FileNotWritable;
+        }
+        return $this;
+    }
 
     /**
      * @param bool $clearstatcache

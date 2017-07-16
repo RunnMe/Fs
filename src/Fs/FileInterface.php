@@ -53,6 +53,12 @@ interface FileInterface
     public function create();
 
     /**
+     * @param \DateTimeInterface|int|null $time
+     * @return $this
+     */
+    public function touch($time = null);
+
+    /**
      * @param bool $clearstatcache
      * @return int
      */

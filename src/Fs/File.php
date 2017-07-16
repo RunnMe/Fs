@@ -83,34 +83,6 @@ class File
         return $time;
     }
 
-    /**
-     * @param \DateTimeInterface|int|null $time
-     * @return $this
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\FileNotWritable
-     */
-    public function touch($time = null)
-    {
-        if (empty($this->getPath())) {
-            throw new EmptyPath;
-        }
-
-        if ($time instanceof \DateTimeInterface) {
-            $time = $time->getTimestamp();
-        }
-
-        if (null === $time) {
-            $res = @touch($this->getPath());
-        } else {
-            $res = @touch($this->getPath(), $time);
-        }
-
-        if (false === $res) {
-            throw new FileNotWritable;
-        }
-        return $this;
-    }
-
     // passthru
 
 }

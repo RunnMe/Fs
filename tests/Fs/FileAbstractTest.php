@@ -10,9 +10,6 @@ use Runn\Fs\PathAwareInterface;
 
 class FakeFileClass extends FileAbstract
 {
-    public function touch($time = null) {
-        return $this;
-    }
     public function create() {
         return $this;
     }
