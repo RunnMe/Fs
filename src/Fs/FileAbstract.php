@@ -2,10 +2,10 @@
 
 namespace Runn\Fs;
 
+use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotWritable;
-use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\InvalidFileClass;
 
 /**
@@ -163,7 +163,7 @@ abstract class FileAbstract
      * @param \DateTimeInterface|int|null $time
      * @return $this
      * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\InvalidDir
+     * @throws \Runn\Fs\Exceptions\DirNotExists
      * @throws \Runn\Fs\Exceptions\FileNotWritable
      */
     public function touch($time = null)
@@ -173,7 +173,7 @@ abstract class FileAbstract
         }
 
         if ( ($this instanceof Dir) && !$this->exists() ) {
-            throw new InvalidDir;
+            throw new DirNotExists;
         }
 
         if ($time instanceof \DateTimeInterface) {

@@ -30,8 +30,9 @@ abstract class Exception
         'INVALID_DIR'            => 201,
         'MKDIR_ERROR'            => 202,
         'DIR_ALREADY_EXISTS'     => 203,
-        'DIR_TOUCH_ERROR'        => 204,
-        'DIR_NOT_READABLE'       => 205,
+        'DIR_NOT_EXISTS'         => 204,
+        'DIR_TOUCH_ERROR'        => 205,
+        'DIR_NOT_READABLE'       => 206,
     ];
 
 }

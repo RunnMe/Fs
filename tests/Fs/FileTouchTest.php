@@ -25,20 +25,22 @@ class FileTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertFileNotExists($filename);
 
         $file = new File($filename);
-        $time = time();
         $ret = $file->touch();
 
         $this->assertSame($ret, $file);
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time, filemtime($filename), '', 1);
+        $this->assertEquals(time(), filemtime($filename), '', 1);
 
-        sleep(2);
+        touch($filename, time()-1000);
+        clearstatcache($filename);
+        $this->assertEquals(time()-1000, filemtime($filename), '', 1);
+
         $file->touch();
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time+2, filemtime($filename), '', 1);
+        $this->assertEquals(time(), filemtime($filename), '', 1);
 
         unlink($filename);
     }
