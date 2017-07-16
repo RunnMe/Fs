@@ -118,7 +118,12 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ret->isLink());
         $this->assertTrue($ret->isDir());
 
-        rmdir($target);
+        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
+        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+            rmdir($target);
+        } else {
+            unlink($target);
+        }
         rmdir($path);
     }
 
