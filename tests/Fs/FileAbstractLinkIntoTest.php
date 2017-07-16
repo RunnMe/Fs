@@ -123,6 +123,29 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
         rmdir($path);
     }
 
+    public function testFileLinkWithTargetName()
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsLinkTest');
+        $target = $path . DIRECTORY_SEPARATOR . 'test.file';
+        mkdir($path);
+
+        $source = new FakeFileLinkToClass(__FILE__);
+        $ret = $source->linkInto(new Dir($path), 'test.file');
+
+        $this->assertTrue(file_exists($target));
+        $this->assertTrue(is_file($target));
+        $this->assertTrue(is_link($target));
+        $this->assertSame(__FILE__, readlink($target));
+
+        $this->assertInstanceOf(File::class, $ret);
+        $this->assertTrue($ret->exists());
+        $this->assertTrue($ret->isLink());
+        $this->assertTrue($ret->isFile());
+
+        unlink($target);
+        rmdir($path);
+    }
+
     public function testDirLinkWithoutTargetName()
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsLinkTest');
@@ -131,6 +154,34 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
 
         $source = new FakeFileLinkToClass(__DIR__);
         $ret = $source->linkInto(new Dir($path));
+
+        $this->assertTrue(file_exists($target));
+        $this->assertTrue(is_dir($target));
+        $this->assertTrue(is_link($target));
+        $this->assertSame(__DIR__, readlink($target));
+
+        $this->assertInstanceOf(Dir::class, $ret);
+        $this->assertTrue($ret->exists());
+        $this->assertTrue($ret->isLink());
+        $this->assertTrue($ret->isDir());
+
+        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
+        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+            rmdir($target);
+        } else {
+            unlink($target);
+        }
+        rmdir($path);
+    }
+
+    public function testDirLinkWithTargetName()
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsLinkTest');
+        $target = $path . DIRECTORY_SEPARATOR . 'test.dir';
+        mkdir($path);
+
+        $source = new FakeFileLinkToClass(__DIR__);
+        $ret = $source->linkInto(new Dir($path), 'test.dir');
 
         $this->assertTrue(file_exists($target));
         $this->assertTrue(is_dir($target));
