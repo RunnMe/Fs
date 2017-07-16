@@ -22,6 +22,9 @@
   "autoload": {
     "psr-4": {
       "Runn\\": "src/"
-    }
+    },
+    "files": [
+      "src/Fs/functions.php"
+    ]
   }
 }

@@ -3,6 +3,7 @@
 namespace Runn\tests\Fs\Exception;
 
 use Runn\Fs\Exception;
+use Runn\Fs\Exceptions\CopyError;
 use Runn\Fs\Exceptions\DirAlreadyExists;
 use Runn\Fs\Exceptions\DirIsFile;
 use Runn\Fs\Exceptions\DirNotExists;
@@ -42,6 +43,13 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
         $exception = new SymlinkError();
         $this->assertInstanceOf(Exception::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['SYMLINK_ERROR']);
+    }
+
+    public function testCopyError()
+    {
+        $exception = new CopyError();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['COPY_ERROR']);
     }
 
     public function testInvalidFile()

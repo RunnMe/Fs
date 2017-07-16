@@ -37,8 +37,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateMkDirError()
     {
-        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
-        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (\Runn\Fs\isWindows()) {
             return;
         }
 
@@ -77,8 +76,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
 
-        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
-        if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (!\Runn\Fs\isWindows()) {
             $this->assertEquals('0755', substr(sprintf('%o', fileperms($path)), -4));
         }
 
@@ -96,8 +94,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
 
-        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
-        if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (!\Runn\Fs\isWindows()) {
             $this->assertEquals('0777', substr(sprintf('%o', fileperms($path)), -4));
         }
 
@@ -129,8 +126,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
 
-        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
-        if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (!\Runn\Fs\isWindows()) {
             $this->assertEquals('0777', substr(sprintf('%o', fileperms($path)), -4));
         }
 

@@ -31,8 +31,7 @@ class DirMtimeTest extends \PHPUnit_Framework_TestCase
 
     public function testMtimeNotReadable()
     {
-        /** @todo @7.2 PHP_OS_FAMILY  == 'Windows' */
-        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (\Runn\Fs\isWindows()) {
             return;
         }
 
