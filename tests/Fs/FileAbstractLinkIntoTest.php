@@ -76,6 +76,30 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
+    public function testSymlinkError()
+    {
+        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
+        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+            return;
+        }
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsLinkTest');
+        mkdir($path);
+        chmod($path, 0000);
+
+        try {
+            $source = new FakeFileLinkToClass(__FILE__);
+            $source->linkInto(new Dir($path));
+        } catch (SymlinkError $e) {
+            return;
+        } finally {
+            chmod($path, 0777);
+            rmdir($path);
+        }
+
+        $this->fail();
+    }
+
     public function testFileLinkWithoutTargetName()
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsLinkTest');
