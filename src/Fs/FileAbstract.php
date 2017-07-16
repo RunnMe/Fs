@@ -261,11 +261,7 @@ abstract class FileAbstract
                 //exec('\\cp ' . $this->getPath(). '2>/dev/null', $out, $code);
             } elseif (canXcopy()) {
 
-                $cmd = 'xcopy "' . $this->getPath(). '" "' . $targetPath . '" /i /s /e /h /r /y 2>/NUL';
-                if ($this->isFile()) {
-                    $cmd = 'echo F | ' . $cmd;
-                }
-                exec($cmd, $out, $code);
+                $code = xcopy($this->getPath(), $targetPath);
                 if (0 !== $code) {
                     throw new CopyError('xcopy command error');
                 }

@@ -44,3 +44,21 @@ function canXcopy()
     }
     return false;
 }
+
+/**
+ * Copies source to destination via "xcopy" command
+ * @param string $src
+ * @param string $dst
+ * @return int
+ */
+function xcopy($src, $dst)
+{
+    $cmd = 'xcopy "' . $src. '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
+    if (is_dir($src)) {
+        $cmd = 'echo D | ' . $cmd;
+    } else {
+        $cmd = 'echo F | ' . $cmd;
+    }
+    exec($cmd, $out, $code);
+    return $code;
+}
