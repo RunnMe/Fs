@@ -4,6 +4,7 @@ namespace Runn\Fs;
 
 /**
  * Is current OS Windows?
+ * @codeCoverageIgnore
  * @return bool
  */
 function isWindows()
@@ -14,6 +15,7 @@ function isWindows()
 
 /**
  * Can use "cp" command?
+ * @codeCoverageIgnore
  * @return bool
  */
 function canCp()
@@ -29,6 +31,7 @@ function canCp()
 
 /**
  * Can use "xcopy" command? (windows-only)
+ * @codeCoverageIgnore
  * @return bool
  */
 function canXcopy()
