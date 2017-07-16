@@ -3,7 +3,7 @@
 namespace Runn\tests\Fs\Dir;
 
 use Runn\Fs\Dir;
-use Runn\Fs\Exceptions\FileAlreadyExists;
+use Runn\Fs\Exceptions\DirAlreadyExists;
 
 class DirCreateTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,9 +17,6 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         $dir->create();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirAlreadyExists
-     */
     public function testCreateAlreadyExists()
     {
         $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
@@ -28,7 +25,7 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         try {
             $dir = new Dir($dirname);
             $dir->create();
-        } catch (FileAlreadyExists $e) {
+        } catch (DirAlreadyExists $e) {
             return;
         } finally {
             rmdir($dirname);

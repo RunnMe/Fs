@@ -5,6 +5,7 @@ namespace Runn\tests\Fs\Exception;
 use Runn\Fs\Exception;
 use Runn\Fs\Exceptions\DirAlreadyExists;
 use Runn\Fs\Exceptions\DirIsFile;
+use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\DirNotReadable;
 use Runn\Fs\Exceptions\DirTouchError;
 use Runn\Fs\Exceptions\EmptyPath;
@@ -81,6 +82,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new InvalidDir();
         $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(InvalidFile::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['INVALID_DIR']);
     }
 
@@ -95,7 +97,16 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new DirAlreadyExists();
         $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(FileAlreadyExists::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['DIR_ALREADY_EXISTS']);
+    }
+
+    public function testDirNotExists()
+    {
+        $exception = new DirNotExists();
+        $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(FileNotExists::class, $exception);
+        $this->assertSame($exception->getCode(), Exception::CODES['DIR_NOT_EXISTS']);
     }
 
     public function testDirTouchError()
@@ -109,6 +120,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new DirNotReadable();
         $this->assertInstanceOf(Exception::class, $exception);
+        $this->assertInstanceOf(FileNotReadable::class, $exception);
         $this->assertSame($exception->getCode(), Exception::CODES['DIR_NOT_READABLE']);
     }
 

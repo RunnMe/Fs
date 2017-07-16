@@ -2,8 +2,6 @@
 
 namespace Runn\Fs\Exceptions;
 
-use Runn\Fs\Exception;
-
 /**
  * "Dir already exists" exception class
  *
@@ -11,7 +9,7 @@ use Runn\Fs\Exception;
  * @package Runn\Fs\Exceptions
  */
 class DirAlreadyExists
-    extends Exception
+    extends FileAlreadyExists
 {
 
     /**
@@ -21,7 +19,8 @@ class DirAlreadyExists
      */
     public function __construct($message = '', \Throwable $previous = null)
     {
-        parent::__construct($message, self::CODES['DIR_ALREADY_EXISTS'], $previous);
+        parent::__construct($message, $previous);
+        $this->code = self::CODES['DIR_ALREADY_EXISTS'];
     }
 
 }

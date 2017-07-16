@@ -2,8 +2,6 @@
 
 namespace Runn\Fs\Exceptions;
 
-use Runn\Fs\Exception;
-
 /**
  * "Invalid directory" exception class
  *
@@ -11,7 +9,7 @@ use Runn\Fs\Exception;
  * @package Runn\Fs\Exceptions
  */
 class InvalidDir
-    extends Exception
+    extends InvalidFile
 {
 
     /**
@@ -21,7 +19,8 @@ class InvalidDir
      */
     public function __construct($message = '', \Throwable $previous = null)
     {
-        parent::__construct($message, self::CODES['INVALID_DIR'], $previous);
+        parent::__construct($message, $previous);
+        $this->code = self::CODES['INVALID_DIR'];
     }
 
 }

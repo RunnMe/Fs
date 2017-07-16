@@ -2,8 +2,6 @@
 
 namespace Runn\Fs\Exceptions;
 
-use Runn\Fs\Exception;
-
 /**
  * "Directory is not readable" exception class
  *
@@ -11,7 +9,7 @@ use Runn\Fs\Exception;
  * @package Runn\Fs\Exceptions
  */
 class DirNotReadable
-    extends Exception
+    extends FileNotReadable
 {
 
     /**
@@ -21,7 +19,8 @@ class DirNotReadable
      */
     public function __construct($message = '', \Throwable $previous = null)
     {
-        parent::__construct($message, self::CODES['DIR_NOT_READABLE'], $previous);
+        parent::__construct($message, $previous);
+        $this->code = self::CODES['DIR_NOT_READABLE'];
     }
 
 }
