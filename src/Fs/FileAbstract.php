@@ -35,13 +35,13 @@ abstract class FileAbstract
             throw new InvalidFileClass;
         }
 
-        if (!file_exists($path) || is_file($path)) {
-            $class = $class ?? File::class;
-            return new $class($path);
-        } elseif (is_dir($path)) {
+        if (file_exists($path) && is_dir($path)) {
             $class = $class ?? Dir::class;
-            return new $class($path);
+        } else {
+            $class = $class ?? File::class;
         }
+
+        return new $class($path);
     }
 
     /**
