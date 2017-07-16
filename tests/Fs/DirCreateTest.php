@@ -20,16 +20,16 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAlreadyExists()
     {
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
-        mkdir($dirname);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        mkdir($path);
 
         try {
-            $dir = new Dir($dirname);
+            $dir = new Dir($path);
             $dir->create();
         } catch (DirAlreadyExists $e) {
             return;
         } finally {
-            rmdir($dirname);
+            rmdir($path);
         }
 
         $this->fail();
@@ -42,66 +42,99 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
-        $this->assertDirectoryNotExists($dirname);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        $this->assertDirectoryNotExists($path);
 
-        mkdir($dirname . '/1/2', 0777, true);
-        chmod($dirname . '/1/2', 0000);
-        $this->assertTrue(file_exists($dirname . '/1/2'));
-        $this->assertTrue(is_dir($dirname . '/1/2'));
-        $this->assertFalse(is_writable($dirname . '/1/2'));
+        mkdir($path . '/1/2', 0777, true);
+        chmod($path . '/1/2', 0000);
+        $this->assertTrue(file_exists($path . '/1/2'));
+        $this->assertTrue(is_dir($path . '/1/2'));
+        $this->assertFalse(is_writable($path . '/1/2'));
 
         try {
 
-            $dir = new Dir($dirname . '/1/2/3');
+            $dir = new Dir($path . '/1/2/3');
             $dir->create();
 
         } catch (MkDirError $e) {
             return;
         } finally {
-            chmod($dirname . '/1/2', 0777);
-            rmdir($dirname . '/1/2');
-            rmdir($dirname . '/1');
-            rmdir($dirname);
+            chmod($path . '/1/2', 0777);
+            rmdir($path . '/1/2');
+            rmdir($path . '/1');
+            rmdir($path);
         }
     }
 
     public function testCreateValid()
     {
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
-        $this->assertDirectoryNotExists($dirname);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        $this->assertDirectoryNotExists($path);
 
-        $dir = new Dir($dirname);
+        $dir = new Dir($path);
         $ret = $dir->create();
 
         $this->assertSame($ret, $dir);
-        $this->assertDirectoryExists($dirname);
+        $this->assertDirectoryExists($path);
 
         /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
         if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
-            $this->assertEquals('0755', substr(sprintf('%o', fileperms($dirname)), -4));
+            $this->assertEquals('0755', substr(sprintf('%o', fileperms($path)), -4));
         }
 
-        rmdir($dirname);
+        rmdir($path);
     }
 
     public function testCreateValidWithMode()
     {
-        $dirname = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
-        $this->assertDirectoryNotExists($dirname);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        $this->assertDirectoryNotExists($path);
 
-        $dir = new Dir($dirname);
+        $dir = new Dir($path);
         $ret = $dir->create(0777);
 
         $this->assertSame($ret, $dir);
-        $this->assertDirectoryExists($dirname);
+        $this->assertDirectoryExists($path);
 
         /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
         if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
-            $this->assertEquals('0777', substr(sprintf('%o', fileperms($dirname)), -4));
+            $this->assertEquals('0777', substr(sprintf('%o', fileperms($path)), -4));
         }
 
-        rmdir($dirname);
+        rmdir($path);
+    }
+
+    public function testMakeAlreadyExists()
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        mkdir($path);
+
+        $dir = new Dir($path);
+        $this->assertTrue($dir->exists());
+
+        $ret = $dir->make();
+        $this->assertSame($dir, $ret);
+
+        rmdir($path);
+    }
+
+    public function testMake()
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
+        $this->assertDirectoryNotExists($path);
+
+        $dir = new Dir($path);
+        $ret = $dir->make(0777);
+
+        $this->assertSame($ret, $dir);
+        $this->assertDirectoryExists($path);
+
+        /** @todo @7.2 PHP_OS_FAMILY  != 'Windows' */
+        if (!in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+            $this->assertEquals('0777', substr(sprintf('%o', fileperms($path)), -4));
+        }
+
+        rmdir($path);
     }
 
 }
