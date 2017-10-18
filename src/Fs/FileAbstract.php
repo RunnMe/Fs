@@ -240,6 +240,10 @@ abstract class FileAbstract
         if (!$this->exists()) {
             throw new FileNotExists;
         }
+        /** @todo: remove this */
+        if (!$this->isFile()) {
+            throw new CopyError('Sorry, copying only files is supported yet');
+        }
         if (!$dir->exists()) {
             throw new DirNotExists;
         }
@@ -255,22 +259,9 @@ abstract class FileAbstract
             }
         }
 
-        try {
-
-            if (canCp()) {
-                //exec('\\cp ' . $this->getPath(). '2>/dev/null', $out, $code);
-            } elseif (canXcopy()) {
-
-                $code = xcopy($this->getPath(), $targetPath);
-                if (0 !== $code) {
-                    throw new CopyError('xcopy command error');
-                }
-
-            }
-
-        } catch (CopyError $e) {
-            // @todo: php copy
-            throw $e;
+        $res = copy($this->getPath(), $targetPath);
+        if (false === $res) {
+            throw new CopyError('PHP "copy" error');
         }
 
         return self::instance($targetPath);

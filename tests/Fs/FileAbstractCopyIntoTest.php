@@ -82,6 +82,38 @@ class FileAbstractCopyIntoTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
+    /**
+     * @todo: remove this when copy of dirs will be implemented
+     */
+    public function testSourceIsDir()
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsCopyTest');
+        $target = $path . DIRECTORY_SEPARATOR . 'test.dir';
+        mkdir($path);
+        touch($target);
+
+        $src = __DIR__ . DIRECTORY_SEPARATOR . 'test.dir';
+        mkdir($src);
+
+        try {
+            $dir = new FakeFileCopyToClass($src);
+            $dir->copyInto(new Dir($path));
+        } catch (CopyError $e) {
+            $this->assertEquals('Sorry, copying only files is supported yet', $e->getMessage());
+            return;
+        } finally {
+
+            rmdir($src);
+            unlink($target);
+            rmdir($path);
+
+        }
+
+        $this->fail();
+    }
+
+    /*
+     * @todo: uncomment when copy of dirs will be implemented
     public function testSourceIsDirTargetIsFile()
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsCopyTest');
@@ -108,7 +140,61 @@ class FileAbstractCopyIntoTest extends \PHPUnit_Framework_TestCase
 
         $this->fail();
     }
+    */
 
+    public function testCopyFileWithOwnName()
+    {
+        $src = __DIR__ . DIRECTORY_SEPARATOR . 'test.file';
+        touch($src);
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsCopyTest');
+        $target = $path . DIRECTORY_SEPARATOR . 'test.dir';
+        mkdir($target, 0777, true);
+
+        try {
+
+            $file = new FakeFileCopyToClass($src);
+            $file->copyInto(new Dir($target));
+
+            $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'test.file');
+
+        } catch (\Throwable $e) {
+            $this->fail();
+        } finally {
+            unlink($target . DIRECTORY_SEPARATOR . 'test.file');
+            rmdir($target);
+            rmdir($path);
+            unlink($src);
+        }
+    }
+
+    public function testCopyFileWithAnother()
+    {
+        $src = __DIR__ . DIRECTORY_SEPARATOR . 'test.file';
+        touch($src);
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsCopyTest');
+        $target = $path . DIRECTORY_SEPARATOR . 'test.dir';
+        mkdir($target, 0777, true);
+
+        try {
+
+            $file = new FakeFileCopyToClass($src);
+            $file->copyInto(new Dir($target), 'foo.test');
+
+            $this->assertFileExists($target . DIRECTORY_SEPARATOR . 'foo.test');
+
+        } catch (\Throwable $e) {
+            $this->fail();
+        } finally {
+            unlink($target . DIRECTORY_SEPARATOR . 'foo.test');
+            rmdir($target);
+            rmdir($path);
+            unlink($src);
+        }
+    }
+
+    /*
     public function testXcopyFile()
     {
         if (!canXcopy()) {
@@ -132,5 +218,6 @@ class FileAbstractCopyIntoTest extends \PHPUnit_Framework_TestCase
         unlink($target1);
         rmdir($path);
     }
+    */
 
 }
