@@ -1,6 +1,7 @@
 <?php
 
 namespace Runn\Fs;
+use function foo\func;
 
 /**
  * Is current OS Windows?
@@ -25,6 +26,7 @@ function isMacos()
 
 /**
  * Can use "cp" console command?
+ * @codeCoverageIgnore
  * @return bool
  */
 function canCp()
@@ -39,19 +41,30 @@ function canCp()
 }
 
 /**
- * Can use "xcopy" command? (windows-only)
+ * Can use "xcopy" console command? (windows-only)
  * @codeCoverageIgnore
  * @return bool
  */
 function canXcopy()
 {
     if (isWindows()) {
-        exec('xcopy /? 2>NUL', $out, $code);
+        exec('xcopy /? >NUL', $out, $code);
         if (0 === $code) {
             return true;
         }
     }
     return false;
+}
+
+/**
+ * Copies source to destination via "cp" command
+ * @param string $src
+ * @param string $dst
+ * @return int
+ */
+function cp($src, $dst)
+{
+
 }
 
 /**
