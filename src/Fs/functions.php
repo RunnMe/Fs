@@ -57,14 +57,20 @@ function canXcopy()
 }
 
 /**
- * Copies source to destination via "cp" command
+ * Copies source file to destination via "cp" command
  * @param string $src
  * @param string $dst
  * @return int
  */
-function cp($src, $dst)
+function cpFile($src, $dst)
 {
+    if (isMacos()) {
 
+    } else {
+        $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" &>/dev/null';
+    }
+    exec($cmd, $out, $code);
+    return $code;
 }
 
 /**
@@ -83,4 +89,47 @@ function xcopy($src, $dst)
     }
     exec($cmd, $out, $code);
     return $code;
+}
+
+/**
+ * Copies one file
+ * @param string $src Source file name (full path)
+ * @param string $dst Destination file name (full path)
+ * @return bool
+ */
+function copyFile($src, $dst)
+{
+    return \copy($src, $dst);
+}
+
+/**
+ * Copies directory (recursive)
+ * @param string $src Source dir name (full path)
+ * @param string $dst Destination dir name (full path)
+ * @return bool
+ */
+function copyDir($src, $dst)
+{
+    $list = array_diff(scandir($src), ['.', '..']);
+    foreach ($list as $file) {
+        if (is_dir($file)) {
+            mkdir($dst . DIRECTORY_SEPARATOR . $file);
+            $res = copyDir($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+        } else {
+            $res = copyFile($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+        }
+        if (false === $res) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function copy($src, $dst)
+{
+    if (is_dir($src)) {
+        return copyDir($src, $dst);
+    } else {
+        return copyFile($src, $dst);
+    }
 }

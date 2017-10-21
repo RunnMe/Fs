@@ -240,13 +240,10 @@ abstract class FileAbstract
         if (!$this->exists()) {
             throw new FileNotExists;
         }
-        /** @todo: remove this */
-        if (!$this->isFile()) {
-            throw new CopyError('Sorry, copying only files is supported yet');
-        }
         if (!$dir->exists()) {
             throw new DirNotExists;
         }
+
         $targetName = $targetName ?: basename($this->getPath());
         $targetPath = $dir->getPath() . DIRECTORY_SEPARATOR . $targetName;
 
@@ -259,7 +256,7 @@ abstract class FileAbstract
             }
         }
 
-        $res = copy($this->getPath(), $targetPath);
+        $res = \Runn\Fs\copy($this->getPath(), $targetPath);
         if (false === $res) {
             throw new CopyError('PHP "copy" error');
         }
