@@ -21,6 +21,7 @@ function isWindows()
  */
 function isMacos()
 {
+    /** @7.2 PHP_OS_FAMILY  != 'Darwin' */
     return in_array(PHP_OS, ['Darwin']);
 }
 
@@ -57,6 +58,8 @@ function canXcopy()
 }
 
 /**
+ * @todo
+ * @codeCoverageIgnore
  * Copies source file to destination via "cp" command
  * @param string $src
  * @param string $dst
@@ -74,6 +77,8 @@ function cpFile($src, $dst)
 }
 
 /**
+ * @todo
+ * @codeCoverageIgnore
  * Copies source to destination via "xcopy" command
  * @param string $src
  * @param string $dst
@@ -92,7 +97,7 @@ function xcopy($src, $dst)
 }
 
 /**
- * Copies one file
+ * Copies one file via PHP "copy()" function
  * @param string $src Source file name (full path)
  * @param string $dst Destination file name (full path)
  * @return bool
@@ -103,7 +108,7 @@ function copyFile($src, $dst)
 }
 
 /**
- * Copies directory (recursive)
+ * Copies directory (recursive) via PHP "copy()" function
  * @param string $src Source dir name (full path)
  * @param string $dst Destination dir name (full path)
  * @return bool
@@ -125,6 +130,12 @@ function copyDir($src, $dst)
     return true;
 }
 
+/**
+ * Copies file or directory (recursive) via PHP "copy()" function
+ * @param string $src Source dir name (full path)
+ * @param string $dst Destination dir name (full path)
+ * @return bool
+ */
 function copy($src, $dst)
 {
     if (is_dir($src)) {

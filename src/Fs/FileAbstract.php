@@ -257,9 +257,11 @@ abstract class FileAbstract
         }
 
         $res = \Runn\Fs\copy($this->getPath(), $targetPath);
+        // @codeCoverageIgnoreStart
         if (false === $res) {
             throw new CopyError('PHP "copy" error');
         }
+        // @codeCoverageIgnoreEnd
 
         return self::instance($targetPath);
     }
