@@ -1,23 +1,23 @@
 <?php
 
-namespace Runn\Fs;
+namespace Runn\Fs\Files;
 
 use Runn\Serialization\SerializerInterface;
-use Runn\Serialization\Serializers\Json;
+use Runn\Serialization\Serializers\Serialize;
 
 /**
- * File with contents serialized into JSON
+ * File with contents serialized into PHP serialized string format
  *
- * Class JsonFile
- * @package Runn\Fs
+ * Class SerializedFile
+ * @package Runn\Fs\Files
  */
-class JsonFile
+class SerializedFile
     extends FileWithSerializer
 {
 
     public function getSerializer(): ?SerializerInterface
     {
-        return new Json();
+        return new Serialize();
     }
 
     public function setSerializer(?SerializerInterface $serializer)

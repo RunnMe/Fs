@@ -1,10 +1,10 @@
 <?php
 
-namespace Runn\tests\Fs\PhpFile;
+namespace Runn\tests\Fs\Files\PhpFile;
 
 use Runn\Core\Std;
 use Runn\Fs\Exceptions\FileNotReadable;
-use Runn\Fs\PhpFile;
+use Runn\Fs\Files\PhpFile;
 use Runn\Serialization\Serializers\PassThru;
 
 class PhpFileTest extends \PHPUnit_Framework_TestCase
@@ -22,7 +22,6 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     * @expectedExceptionCode 1
      */
     public function testLoadEmpty()
     {
@@ -33,7 +32,6 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     * @expectedExceptionCode 2
      */
     public function testLoadNotExists()
     {
@@ -44,8 +42,7 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadNotReadable()
     {
-        /** @todo @7.2 PHP_OS_FAMILY  == 'Windows' */
-        if (in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows'])) {
+        if (\Runn\Fs\isWindows()) {
             return;
         }
 
