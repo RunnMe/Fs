@@ -1,4 +1,4 @@
-# running-fs
+# Runn Me! FS
 Runn Me! File System Library
 
 [![Build Status](https://travis-ci.org/RunnMe/Fs.png?branch=master)](https://travis-ci.org/RunnMe/Fs)

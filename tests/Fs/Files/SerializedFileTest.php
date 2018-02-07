@@ -1,8 +1,8 @@
 <?php
 
-namespace Runn\tests\Fs\SerializedFile;
+namespace Runn\tests\Fs\Files\SerializedFile;
 
-use Runn\Fs\SerializedFile;
+use Runn\Fs\Files\SerializedFile;
 use Runn\Serialization\Serializers\PassThru;
 
 class SerializedFileTest extends \PHPUnit_Framework_TestCase

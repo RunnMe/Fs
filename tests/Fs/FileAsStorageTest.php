@@ -37,7 +37,7 @@ class FileAsStorageTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadNotReadable()
     {
-        if ('Windows' == PHP_OS_FAMILY) {
+        if (\Runn\Fs\isWindows()) {
             return;
         }
         $filename = tempnam(sys_get_temp_dir(), 'FsTest');

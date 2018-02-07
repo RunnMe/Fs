@@ -1,8 +1,8 @@
 <?php
 
-namespace Runn\tests\Fs\FileWithSerializer;
+namespace Runn\tests\Fs\Files\FileWithSerializer;
 
-use Runn\Fs\FileWithSerializer;
+use Runn\Fs\Files\FileWithSerializer;
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\PassThru;
 

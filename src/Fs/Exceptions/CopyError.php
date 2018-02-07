@@ -5,23 +5,23 @@ namespace Runn\Fs\Exceptions;
 use Runn\Fs\Exception;
 
 /**
- * "File is dir" exception class
+ * "Copy error" exception class
  *
- * Class FileIsDir
+ * Class CopyError
  * @package Runn\Fs\Exceptions
  */
-class FileIsDir
+class CopyError
     extends Exception
 {
 
     /**
-     * FileIsDir constructor.
+     * CopyError constructor.
      * @param string $message
      * @param \Throwable|null $previous
      */
     public function __construct($message = '', \Throwable $previous = null)
     {
-        parent::__construct($message, self::CODES['FILE_IS_DIR'], $previous);
+        parent::__construct($message, self::CODES['COPY_ERROR'], $previous);
     }
 
 }
