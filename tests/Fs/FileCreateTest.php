@@ -19,10 +19,7 @@ class FileCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateValid()
     {
-        $filename = sys_get_temp_dir() . '/FsTest_create';
-        if (file_exists($filename)) {
-            unlink($filename);
-        }
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
         $this->assertFileNotExists($filename);
 
         $file = new File($filename);
@@ -36,8 +33,7 @@ class FileCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAlreadyExists()
     {
-        $filename = sys_get_temp_dir() . '/FsTest_create';
-        touch($filename);
+        $filename = tempnam(sys_get_temp_dir(), 'FsTest');
 
         try {
             $file = new File($filename);

@@ -15,15 +15,26 @@ abstract class Exception
 {
 
     const CODES = [
-        'EMPTY_PATH'             => 1,
-        'FILE_NOT_EXISTS'        => 2,
-        'FILE_ALREADY_EXISTS'    => 3,
-        'FILE_NOT_READABLE'      => 4,
-        'FILE_NOT_WRITABLE'      => 5,
-        'FILE_NOT_DELETABLE'     => 6,
-        'FILE_IS_DIR'            => 7,
-        'FILE_NULL_CONTENTS'     => 8,
-        'FILE_DESERIALIZE_ERROR' => 9,
+        'INVALID_FILE_CLASS'     => 1,
+        'EMPTY_PATH'             => 2,
+        'SYMLINK_ERROR'          => 3,
+        'COPY_ERROR'             => 4,
+
+        'INVALID_FILE'           => 101,
+        'FILE_NOT_EXISTS'        => 102,
+        'FILE_ALREADY_EXISTS'    => 103,
+        'FILE_NOT_READABLE'      => 104,
+        'FILE_NOT_WRITABLE'      => 105,
+        'FILE_NOT_DELETABLE'     => 106,
+        'FILE_NULL_CONTENTS'     => 107,
+        'FILE_DESERIALIZE_ERROR' => 108,
+
+        'INVALID_DIR'            => 201,
+        'MKDIR_ERROR'            => 202,
+        'DIR_ALREADY_EXISTS'     => 203,
+        'DIR_NOT_EXISTS'         => 204,
+        'DIR_TOUCH_ERROR'        => 205,
+        'DIR_NOT_READABLE'       => 206,
     ];
 
 }

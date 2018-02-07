@@ -1,15 +1,17 @@
 <?php
 
-namespace Runn\Fs;
+namespace Runn\Fs\Files;
 
+use Runn\Fs\File;
+use Runn\Fs\FileAsStorageWithSerializerInterface;
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\PassThru;
 
 /**
- * File with serializer (serialized contents)
+ * File with serializer (contains serialized contents)
  *
  * Class FileWithSerializer
- * @package Runn\Fs
+ * @package Runn\Fs\Files
  */
 class FileWithSerializer
     extends File
