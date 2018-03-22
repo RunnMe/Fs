@@ -6,6 +6,7 @@ use function Runn\Fs\canCp;
 use function Runn\Fs\canXcopy;
 use function Runn\Fs\isMacos;
 use function Runn\Fs\isWindows;
+use function Runn\Fs\isLinux;
 
 class functionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,6 +26,16 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(isMacos());
         } else {
             $this->assertFalse(isMacos());
+        }
+    }
+
+    public function testIsLinux()
+    {
+        if ('/' === DIRECTORY_SEPARATOR && 1 === preg_match('~(bsd|gnu|linux|dragonfly)~i',
+                trim(shell_exec('uname')))) {
+            $this->assertTrue(isLinux());
+        } else {
+            $this->assertFalse(isLinux());
         }
     }
 
