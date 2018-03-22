@@ -7,6 +7,9 @@
   "authors": [
     {
       "name": "Albert Stepantsev"
+    },
+    {
+      "name": "Julia Kudryashova"
     }
   ],
   "minimum-stability": "dev",
