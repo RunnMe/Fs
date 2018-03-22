@@ -104,7 +104,6 @@ function xcopy($src, $dst)
     } else {
         $cmd = 'echo F | ' . $cmd;
     }
-var_dump($cmd);
     exec($cmd, $out, $code);
     return $code;
 }
@@ -129,7 +128,6 @@ function copyFile($src, $dst)
 function copyDir($src, $dst)
 {
     $list = array_diff(scandir($src), ['.', '..']);
-var_dump($list);
     foreach ($list as $file) {
         if (is_dir($file)) {
             mkdir($dst . DIRECTORY_SEPARATOR . $file);
