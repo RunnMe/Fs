@@ -26,6 +26,18 @@ function isMacos()
 }
 
 /**
+ * Is current OS Linux?
+ * @codeCoverageIgnore
+ * @return bool
+ */
+function isLinux()
+{
+    /** @7.2 PHP_OS_FAMILY  != 'BSD', 'Linux' */
+    return false !== stripos(PHP_OS, 'bsd') || false !== stripos(PHP_OS, 'gnu')
+        || false !== stripos(PHP_OS, 'linux') || 0 === stripos(PHP_OS, 'dragonfly');
+}
+
+/**
  * Can use "cp" console command?
  * @codeCoverageIgnore
  * @return bool
