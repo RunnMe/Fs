@@ -2,6 +2,7 @@
 
 namespace Runn\Fs;
 use function foo\func;
+use Runn\Fs\Exceptions\CopyError;
 
 /**
  * Is current OS Windows?
@@ -76,15 +77,19 @@ function canXcopy()
  * @param string $src
  * @param string $dst
  * @return int
+ * @throws CopyError
  */
 function cpFile($src, $dst)
 {
     if (isMacos()) {
-
+        $cmd = '\\cp -fp "' . $src . '" "' . $dst . '" &>/dev/null';
     } else {
         $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" &>/dev/null';
     }
     exec($cmd, $out, $code);
+    if (0 !== $code) {
+        throw new CopyError;
+    }
     return $code;
 }
 
