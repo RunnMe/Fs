@@ -9,26 +9,42 @@ use function Runn\Fs\isMacos;
 use function Runn\Fs\isWindows;
 use function Runn\Fs\isLinux;
 use function Runn\Fs\cpFile;
+use function Runn\Fs\xcopy;
 
 class functionsTest extends \PHPUnit_Framework_TestCase
 {
     private $tempDir;
+
+    protected function delTree($dir)
+    {
+        if(empty($dir) || !is_dir($dir)) {
+            return;
+        }
+        $iterator = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach($files as $file) {
+            if ($file->isDir()){
+                rmdir($file->getPathname());
+            } else {
+                unlink($file->getPathname());
+            }
+        }
+        rmdir($dir);
+    }
 
     protected function setUp()
     {
         $this->tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest', false);
         $this->assertDirectoryNotExists($this->tempDir);
         mkdir($this->tempDir);
-        mkdir($this->tempDir . '/source');
-        mkdir($this->tempDir . '/target');
+        mkdir($this->tempDir . DIRECTORY_SEPARATOR . 'source');
+        mkdir($this->tempDir . DIRECTORY_SEPARATOR . 'target');
+
     }
 
     protected function tearDown()
     {
-        array_map('unlink', glob($this->tempDir . '/source/*.*'));
-        array_map('unlink', glob($this->tempDir . '/target/*.*'));
-        array_map('rmdir', glob($this->tempDir . '/*'));
-        rmdir($this->tempDir);
+        $this->delTree($this->tempDir);
     }
 
     public function testIsWindows()
@@ -87,6 +103,8 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $dst = $this->tempDir . '/source/cpFileCopy.txt';
             $this->assertSame(0, cpFile($src, $dst));
             $this->assertFileEquals($src, $dst);
+            $this->assertSame(fileowner($src), fileowner($dst));
+            $this->assertSame(fileperms($src), fileperms($dst));
 
             // Copying a file from the source folder to the target folder
             $dst = $this->tempDir . '/target/';
@@ -107,6 +125,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    // Does not work on Linux
     public function testCpFileCopyDir()
     {
         if (isWindows()) {
@@ -122,12 +141,14 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
+    // Does not work on Linux
     public function testCpFileCopyToItself()
     {
         if (isWindows()) {
             return;
         }
         try {
+            file_put_contents($this->tempDir . '/source/cpFile.txt', 'testCpFileCopyToItself');
             $src = $dst = $this->tempDir . '/source/cpFile.txt';
             cpFile($src, $dst);
         } catch (CopyError $e) {
@@ -136,6 +157,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
+    // Does not work on Linux
     public function testCpFileCopyNonexistingFile()
     {
         if (isWindows()) {
@@ -144,6 +166,55 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         try {
             $src = $this->tempDir . '/nonexistingFile';
             $dst = $this->tempDir . '/target/';
+            cpFile($src, $dst);
+        } catch (CopyError $e) {
+            return;
+        }
+        $this->fail();
+    }
+
+    public function testXcopy()
+    {
+        if (isWindows()) {
+            file_put_contents($this->tempDir . '\source\xcopy.txt', 'TestXcopy');
+            $src = $this->tempDir . '\source\xcopy.txt';
+
+            // Copying a file from the source folder to the target folder
+            $dst = $this->tempDir . '\target\\';
+            $this->assertSame(0, xcopy($src, $dst));
+            $this->assertFileEquals($src, $this->tempDir . '\target\xcopy.txt');
+
+            // Copying a file from the source folder to the target folder and renaming the copy
+            $dst = $this->tempDir . '\target\newXcopy.txt';
+            $this->assertSame(0, xcopy($src, $dst));
+            $this->assertFileEquals($src, $dst);
+
+            // Copying a file from the source folder to an existing destination path
+            file_put_contents($this->tempDir . '\source\xcopy.txt', 'Overwriting');
+            $src = $this->tempDir . '\source\xcopy.txt';
+            $dst = $this->tempDir . '\target\newXcopy.txt';
+            $this->assertSame(0, xcopy($src, $dst));
+            $this->assertFileEquals($src, $dst);
+
+            // Copying all files and subfolders from the source folder to the target folder
+            $src = $this->tempDir . '\source';
+            mkdir( $this->tempDir . '\source\testdir\subdir\test', 0777, true );
+            mkdir( $this->tempDir . '\newTarget');
+            $dst = $this->tempDir . '\newTarget\\';
+            $this->assertSame(0, xcopy($src, $dst));
+            $this->assertDirectoryExists($dst . 'testdir\subdir\test');
+            $this->assertFileExists($dst . 'xcopy.txt');
+        }
+    }
+
+    public function testXcopyFileToSameFolder()
+    {
+        if (!isWindows()) {
+            return;
+        }
+        try {
+            $src = $this->tempDir . '\source\xcopy.txt';
+            $dst = $this->tempDir . '\source\xcopyCopy.txt';
             cpFile($src, $dst);
         } catch (CopyError $e) {
             return;

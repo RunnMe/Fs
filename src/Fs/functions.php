@@ -100,6 +100,7 @@ function cpFile($src, $dst)
  * @param string $src
  * @param string $dst
  * @return int
+ * @throws CopyError
  */
 function xcopy($src, $dst)
 {
@@ -110,6 +111,9 @@ function xcopy($src, $dst)
         $cmd = 'echo F | ' . $cmd;
     }
     exec($cmd, $out, $code);
+    if (0 !== $code) {
+        throw new CopyError;
+    }
     return $code;
 }
 
