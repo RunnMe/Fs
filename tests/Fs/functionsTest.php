@@ -95,7 +95,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     public function testCpFile()
     {
-        if (!isWindows()) {
+        if (canCp()) {
             file_put_contents($this->tempDir . '/source/cpFile.txt', 'TestCpFile');
             $src = $this->tempDir . '/source/cpFile.txt';
 
@@ -128,7 +128,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
     // Does not work on Linux
     public function testCpFileCopyDir()
     {
-        if (isWindows()) {
+        if (!canCp()) {
             return;
         }
         try {
@@ -144,7 +144,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
     // Does not work on Linux
     public function testCpFileCopyToItself()
     {
-        if (isWindows()) {
+        if (!canCp()) {
             return;
         }
         try {
@@ -160,7 +160,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
     // Does not work on Linux
     public function testCpFileCopyNonexistingFile()
     {
-        if (isWindows()) {
+        if (!canCp()) {
             return;
         }
         try {
@@ -175,7 +175,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 */
     public function testXcopy()
     {
-        if (isWindows()) {
+        if (canXcopy()) {
             file_put_contents($this->tempDir . '\source\xcopy.txt', 'TestXcopy');
             $src = $this->tempDir . '\source\xcopy.txt';
 
@@ -209,7 +209,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     public function testXcopyFileToSameFolder()
     {
-        if (!isWindows()) {
+        if (!canXcopy()) {
             return;
         }
         try {
