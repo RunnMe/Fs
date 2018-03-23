@@ -109,7 +109,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     public function testCpFileCopyDir()
     {
-        if (isWindows()) {
+        if (!isWindows()) {
             return;
         }
         try {
@@ -124,7 +124,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     public function testCpFileCopyToItself()
     {
-        if (isWindows()) {
+        if (!isWindows()) {
             return;
         }
         try {
@@ -138,7 +138,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     public function testCpFileCopyNonexistingFile()
     {
-        if (isWindows()) {
+        if (!isWindows()) {
             return;
         }
         try {
