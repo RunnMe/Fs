@@ -126,8 +126,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $this->assertFileEquals($src, $dst);
         }
     }
-/*
-    // Does not work on Linux
+
     public function testCpFileCopyDir()
     {
         if (!canCp()) {
@@ -143,7 +142,6 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
-    // Does not work on Linux
     public function testCpFileCopyToItself()
     {
         if (!canCp()) {
@@ -158,8 +156,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         }
         $this->fail();
     }
-
-    // Does not work on Linux
+    
     public function testCpFileCopyNonexistingFile()
     {
         if (!canCp()) {
@@ -174,7 +171,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         }
         $this->fail();
     }
-*/
+
     public function testXcopy()
     {
         if (canXcopy()) {

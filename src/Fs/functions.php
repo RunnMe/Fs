@@ -84,7 +84,7 @@ function cpFile($src, $dst)
     if (isMacos()) {
         $cmd = '\\cp -fp "' . $src . '" "' . $dst . '" &>/dev/null';
     } else {
-        $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" &>/dev/null';
+        $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" 2>&1 > /dev/null';
     }
     exec($cmd, $out, $code);
     if (0 !== $code) {
