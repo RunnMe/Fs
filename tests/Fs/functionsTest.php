@@ -10,6 +10,7 @@ use function Runn\Fs\isWindows;
 use function Runn\Fs\isLinux;
 use function Runn\Fs\cpFile;
 use function Runn\Fs\xcopy;
+use function Runn\Fs\copyFile;
 
 class functionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,13 +18,13 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
     protected function delTree($dir)
     {
-        if(empty($dir) || !is_dir($dir)) {
+        if (empty($dir) || !is_dir($dir)) {
             return;
         }
         $iterator = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
-        foreach($files as $file) {
-            if ($file->isDir()){
+        foreach ($files as $file) {
+            if ($file->isDir()) {
                 rmdir($file->getPathname());
             } else {
                 unlink($file->getPathname());
@@ -198,8 +199,8 @@ class functionsTest extends \PHPUnit_Framework_TestCase
 
             // Copying all files and subfolders from the source folder to the target folder
             $src = $this->tempDir . '\source';
-            mkdir( $this->tempDir . '\source\testdir\subdir\test', 0777, true );
-            mkdir( $this->tempDir . '\newTarget');
+            mkdir($this->tempDir . '\source\testdir\subdir\test', 0777, true);
+            mkdir($this->tempDir . '\newTarget');
             $dst = $this->tempDir . '\newTarget\\';
             $this->assertSame(0, xcopy($src, $dst));
             $this->assertDirectoryExists($dst . 'testdir\subdir\test');
@@ -221,6 +222,34 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $this->fail();
+    }
+
+    public function testCopyFile()
+    {
+        file_put_contents($this->tempDir . '/source/copy.txt', 'TestCopy');
+        $src = $this->tempDir . '/source/copy.txt';
+
+        // Copying a file in the same folder
+        $dst = $this->tempDir . '/source/copyCopy.txt';
+        $this->assertTrue(copyFile($src, $dst));
+        $this->assertFileEquals($src, $dst);
+
+        // Copying a file from the source folder to the target folder
+        $dst = $this->tempDir . '/target/copy.txt';
+        $this->assertTrue(copyFile($src, $dst));
+        $this->assertFileEquals($src, $dst);
+
+        // Copying a file from the source folder to the target folder and renaming the copy
+        $dst = $this->tempDir . '/target/newCopy.txt';
+        $this->assertTrue(copyFile($src, $dst));
+        $this->assertFileEquals($src, $dst);
+
+        // Copying a file from the source folder to an existing destination path
+        file_put_contents($this->tempDir . '/source/copy.txt', 'Overwriting');
+        $src = $this->tempDir . '/source/copy.txt';
+        $dst = $this->tempDir . '/target/newCopy.txt';
+        $this->assertTrue(copyFile($src, $dst));
+        $this->assertFileEquals($src, $dst);
     }
 
 }
