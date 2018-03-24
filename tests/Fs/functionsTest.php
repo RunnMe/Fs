@@ -11,6 +11,7 @@ use function Runn\Fs\isLinux;
 use function Runn\Fs\cpFile;
 use function Runn\Fs\xcopy;
 use function Runn\Fs\copyFile;
+use function Runn\Fs\copyDir;
 
 class functionsTest extends \PHPUnit_Framework_TestCase
 {
@@ -250,6 +251,27 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         $dst = $this->tempDir . '/target/newCopy.txt';
         $this->assertTrue(copyFile($src, $dst));
         $this->assertFileEquals($src, $dst);
+    }
+
+    public function testCopyDir()
+    {
+        file_put_contents($this->tempDir . '/source/copyDir.txt', 'TestCopyDir');
+        mkdir($this->tempDir . '/source/testdir/subdir/test', 0777, true);
+
+        // Copying the contents of the source folder to the target folder
+        $src = $this->tempDir . '/source';
+        $dst = $this->tempDir . '/target';
+        $this->assertTrue(copyDir($src, $dst));
+        $this->assertFileEquals($src . '/copyDir.txt', $dst . '/copyDir.txt');
+        $this->assertDirectoryExists($dst . '/testdir/subdir/test');
+
+        // Copying the contents of the source folder to the target folder, overwriting any existing content
+        file_put_contents($this->tempDir . '/source/testdir/subdir/test/copyDir.txt', 'TestCopyDir');
+        $src = $this->tempDir . '/source';
+        $dst = $this->tempDir . '/target';
+        $this->assertTrue(copyDir($src, $dst));
+        $this->assertFileEquals($src . '/testdir/subdir/test/copyDir.txt',
+            $dst . '/testdir/subdir/test/copyDir.txt');
     }
 
 }

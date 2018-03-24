@@ -1,7 +1,7 @@
 <?php
 
 namespace Runn\Fs;
-use function foo\func;
+
 use Runn\Fs\Exceptions\CopyError;
 
 /**
@@ -94,7 +94,6 @@ function cpFile($src, $dst)
 }
 
 /**
- * @todo
  * @codeCoverageIgnore
  * Copies source to destination via "xcopy" command
  * @param string $src
@@ -104,7 +103,7 @@ function cpFile($src, $dst)
  */
 function xcopy($src, $dst)
 {
-    $cmd = 'xcopy "' . $src. '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
+    $cmd = 'xcopy "' . $src . '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
     if (is_dir($src)) {
         $cmd = 'echo D | ' . $cmd;
     } else {
@@ -138,8 +137,10 @@ function copyDir($src, $dst)
 {
     $list = array_diff(scandir($src), ['.', '..']);
     foreach ($list as $file) {
-        if (is_dir($file)) {
-            mkdir($dst . DIRECTORY_SEPARATOR . $file);
+        if (is_dir($src . DIRECTORY_SEPARATOR . $file)) {
+            if (!file_exists($dst . DIRECTORY_SEPARATOR . $file)) {
+                mkdir($dst . DIRECTORY_SEPARATOR . $file);
+            }
             $res = copyDir($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
         } else {
             $res = copyFile($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
@@ -161,7 +162,6 @@ function copy($src, $dst)
 {
     if (is_dir($src)) {
         return copyDir($src, $dst);
-    } else {
-        return copyFile($src, $dst);
     }
+    return copyFile($src, $dst);
 }
