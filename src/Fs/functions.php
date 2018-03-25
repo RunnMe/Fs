@@ -11,7 +11,7 @@ use Runn\Fs\Exceptions\CopyError;
  */
 function isWindows(): bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'Windows' */
+    /** @7.2 PHP_OS_FAMILY  == 'Windows' */
     return in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows']);
 }
 
@@ -22,7 +22,7 @@ function isWindows(): bool
  */
 function isMacos(): bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'Darwin' */
+    /** @7.2 PHP_OS_FAMILY  == 'Darwin' */
     return in_array(PHP_OS, ['Darwin']);
 }
 
@@ -33,7 +33,7 @@ function isMacos(): bool
  */
 function isLinux(): bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'BSD', 'Linux' */
+    /** @7.2 PHP_OS_FAMILY  == 'BSD', 'Linux' */
     return false !== stripos(PHP_OS, 'bsd') || false !== stripos(PHP_OS, 'gnu')
         || false !== stripos(PHP_OS, 'linux') || 0 === stripos(PHP_OS, 'dragonfly');
 }
@@ -72,9 +72,13 @@ function canXcopy(): bool
 
 /**
  * @codeCoverageIgnore
- * Copies source to destination via "cp" command
- * @param string $src Source file or directory
- * @param string $dst Destination file or directory
+ * Copies source to destination via "cp" command.
+ * @param string $src Source
+ * @param string $dst Destination
+ * Acceptable copy operations:
+ * - an existing source file to a destination file (overwriting allowed);
+ * - an existing source file to a destination directory (may not exist);
+ * - an existing source directory (contents) to a destination directory (may not exist).
  * @return int
  * @throws CopyError
  */
@@ -98,21 +102,32 @@ function cp(string $src, string $dst): int
 
 /**
  * @codeCoverageIgnore
- * Copies source to destination via "xcopy" command
- * @param string $src Source file or directory
- * @param string $dst Destination file or directory
+ * Copies source to destination via "xcopy" command.
+ * @param string $src Source
+ * @param string $dst Destination
+ * Acceptable copy operations:
+ * - an existing source file to a destination file (overwriting allowed);
+ * - an existing source file to a destination directory (may not exist);
+ * - an existing source directory (contents) to a destination directory (may not exist).
  * @return int
  * @throws CopyError
  */
 function xcopy(string $src, string $dst): int
 {
-    $cmd = 'xcopy "' . $src . '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
+    if (is_file($src)) {
+        $cmd = 'xcopy "' . $src . '" "' . $dst . '" /i /h /r /y 2>/NUL';
+    } else {
+        $cmd = 'xcopy "' . $src . '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
+    }
+
     if (is_dir($src)) {
         $cmd = 'echo D | ' . $cmd;
     } else {
         $cmd = 'echo F | ' . $cmd;
     }
+
     exec($cmd, $out, $code);
+    //var_dump($cmd);var_dump($code);
     if (0 !== $code) {
         throw new CopyError;
     }
@@ -121,9 +136,12 @@ function xcopy(string $src, string $dst): int
 
 /**
  * Copies file or directory (recursive) via PHP "copy()" function.
- *
- * @param string $src Source file or directory
- * @param string $dst Destination file or directory
+ * @param string $src Source
+ * @param string $dst Destination
+ * Acceptable copy operations:
+ * - an existing source file to a destination file (overwriting allowed);
+ * - an existing source file to a destination directory (may not exist);
+ * - an existing source directory (contents) to a destination directory (may not exist).
  * @return bool
  */
 function copy(string $src, string $dst): bool

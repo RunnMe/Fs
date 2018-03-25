@@ -139,6 +139,14 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $this->assertSame(0, cp($src, $dst));
             $this->assertDirectoryExists($dst . 'depth1/depth2/depth3');
             $this->assertFileExists($dst . 'cpFile.txt');
+
+            // Copying the contents of the source folder to the target folder, overwriting any existing content
+            file_put_contents($this->tempDir . '/source/depth1/depth2/depth3/cpDir.txt', 'TestCpDir');
+            $src = $this->tempDir . '/source';
+            $dst = $this->tempDir . '/target';
+            $this->assertTrue(copy($src, $dst));
+            $this->assertFileEquals($src . '/depth1/depth2/depth3/cpDir.txt',
+                $dst . '/depth1/depth2/depth3/cpDir.txt');
         }
     }
 
@@ -178,6 +186,11 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             file_put_contents($this->tempDir . '\source\xcopy.txt', 'TestXcopy');
             $src = $this->tempDir . '\source\xcopy.txt';
 
+            // Copying a file in the same folder
+            $dst = $this->tempDir . '\source\xcopyCopy.txt';
+            $this->assertSame(0, xcopy($src, $dst));
+            $this->assertFileEquals($src, $dst);
+
             // Copying a file from the source folder to the target folder
             $dst = $this->tempDir . '\target\\';
             $this->assertSame(0, xcopy($src, $dst));
@@ -195,7 +208,7 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $this->assertSame(0, xcopy($src, $dst));
             $this->assertFileEquals($src, $dst);
 
-            // Copying all files and subfolders from the source folder to the target folder
+            // Copying all files and subfolders from the source folder to an existing target folder
             $src = $this->tempDir . '\source';
             mkdir($this->tempDir . '\source\depth1\depth2\depth3', 0777, true);
             mkdir($this->tempDir . '\newTarget');
@@ -210,18 +223,25 @@ class functionsTest extends \PHPUnit_Framework_TestCase
             $this->assertSame(0, xcopy($src, $dst));
             $this->assertDirectoryExists($dst . 'depth1\depth2\depth3');
             $this->assertFileExists($dst . 'xcopy.txt');
+
+            // Copying the contents of the source folder to the target folder, overwriting any existing content
+            file_put_contents($this->tempDir . '\source\depth1\depth2\depth3\xcopyDir.txt', 'TestXcopyDir');
+            $src = $this->tempDir . '\source';
+            $dst = $this->tempDir . '\target';
+            $this->assertTrue(copy($src, $dst));
+            $this->assertFileEquals($src . '\depth1\depth2\depth3\xcopyDir.txt',
+                $dst . '\depth1\depth2\depth3\xcopyDir.txt');
         }
     }
 
-    public function testXcopyFileToSameFolder()
+    public function testXcopyCopyToItself()
     {
         if (!canXcopy()) {
             return;
         }
         try {
-            file_put_contents($this->tempDir . '\source\xcopy.txt', 'testXcopyFileToSameFolder');
-            $src = $this->tempDir . '\source\xcopy.txt';
-            $dst = $this->tempDir . '\source\xcopyCopy.txt';
+            file_put_contents($this->tempDir . '\source\xcopy.txt', 'testXcopyCopyToItself');
+            $src = $dst = $this->tempDir . '\source\xcopy.txt';
             xcopy($src, $dst);
         } catch (CopyError $e) {
             return;
@@ -272,22 +292,29 @@ class functionsTest extends \PHPUnit_Framework_TestCase
         $this->assertFileEquals($src, $dst);
 
         file_put_contents($this->tempDir . '/source/copyDir.txt', 'TestCopyDir');
-        mkdir($this->tempDir . '/source/testdir/subdir/test', 0777, true);
+        mkdir($this->tempDir . '/source/depth1/depth2/depth3', 0777, true);
 
-        // Copying the contents of the source folder to the target folder
+        // Copying the contents of the source folder to an existing target folder
         $src = $this->tempDir . '/source';
         $dst = $this->tempDir . '/target';
         $this->assertTrue(copy($src, $dst));
         $this->assertFileEquals($src . '/copyDir.txt', $dst . '/copyDir.txt');
-        $this->assertDirectoryExists($dst . '/testdir/subdir/test');
+        $this->assertDirectoryExists($dst . '/depth1/depth2/depth3');
+
+        // Copying the contents of the source folder to a non-existing target folder
+        $src = $this->tempDir . '/source';
+        $dst = $this->tempDir . '/nonexistingTarget';
+        $this->assertTrue(copy($src, $dst));
+        $this->assertFileEquals($src . '/copyDir.txt', $dst . '/copyDir.txt');
+        $this->assertDirectoryExists($dst . '/depth1/depth2/depth3');
 
         // Copying the contents of the source folder to the target folder, overwriting any existing content
-        file_put_contents($this->tempDir . '/source/testdir/subdir/test/copyDir.txt', 'TestCopyDir');
+        file_put_contents($this->tempDir . '/source/depth1/depth2/depth3/copyDir.txt', 'TestCopyDir');
         $src = $this->tempDir . '/source';
         $dst = $this->tempDir . '/target';
         $this->assertTrue(copy($src, $dst));
-        $this->assertFileEquals($src . '/testdir/subdir/test/copyDir.txt',
-            $dst . '/testdir/subdir/test/copyDir.txt');
+        $this->assertFileEquals($src . '/depth1/depth2/depth3/copyDir.txt',
+            $dst . '/depth1/depth2/depth3/copyDir.txt');
     }
 
 }
