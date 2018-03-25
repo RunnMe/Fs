@@ -9,7 +9,7 @@ use Runn\Fs\Exceptions\CopyError;
  * @codeCoverageIgnore
  * @return bool
  */
-function isWindows()
+function isWindows(): bool
 {
     /** @7.2 PHP_OS_FAMILY  != 'Windows' */
     return in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows']);
@@ -20,7 +20,7 @@ function isWindows()
  * @codeCoverageIgnore
  * @return bool
  */
-function isMacos()
+function isMacos(): bool
 {
     /** @7.2 PHP_OS_FAMILY  != 'Darwin' */
     return in_array(PHP_OS, ['Darwin']);
@@ -31,7 +31,7 @@ function isMacos()
  * @codeCoverageIgnore
  * @return bool
  */
-function isLinux()
+function isLinux(): bool
 {
     /** @7.2 PHP_OS_FAMILY  != 'BSD', 'Linux' */
     return false !== stripos(PHP_OS, 'bsd') || false !== stripos(PHP_OS, 'gnu')
@@ -43,7 +43,7 @@ function isLinux()
  * @codeCoverageIgnore
  * @return bool
  */
-function canCp()
+function canCp(): bool
 {
     if (!isWindows()) {
         exec('\\type cp &>/dev/null', $out, $code);
@@ -59,7 +59,7 @@ function canCp()
  * @codeCoverageIgnore
  * @return bool
  */
-function canXcopy()
+function canXcopy(): bool
 {
     if (isWindows()) {
         exec('xcopy /? >NUL', $out, $code);
@@ -71,20 +71,23 @@ function canXcopy()
 }
 
 /**
- * @todo
  * @codeCoverageIgnore
- * Copies source file to destination via "cp" command
- * @param string $src
- * @param string $dst
+ * Copies source to destination via "cp" command
+ * @param string $src Source file or directory
+ * @param string $dst Destination file or directory
  * @return int
  * @throws CopyError
  */
-function cpFile($src, $dst)
+function cp(string $src, string $dst): int
 {
     if (isMacos()) {
-        $cmd = '\\cp -fp "' . $src . '" "' . $dst . '" &>/dev/null';
+        $cmd = '\\cp -fpR "' . $src . '" "' . $dst . '" &>/dev/null';
     } else {
-        $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" 2>&1 > /dev/null';
+        if (is_file($src)) {
+            $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" 2>&1 > /dev/null';
+        } else {
+            $cmd = '\\cp -fTR --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" 2>&1 > /dev/null';
+        }
     }
     exec($cmd, $out, $code);
     if (0 !== $code) {
@@ -96,12 +99,12 @@ function cpFile($src, $dst)
 /**
  * @codeCoverageIgnore
  * Copies source to destination via "xcopy" command
- * @param string $src
- * @param string $dst
+ * @param string $src Source file or directory
+ * @param string $dst Destination file or directory
  * @return int
  * @throws CopyError
  */
-function xcopy($src, $dst)
+function xcopy(string $src, string $dst): int
 {
     $cmd = 'xcopy "' . $src . '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
     if (is_dir($src)) {
@@ -117,51 +120,33 @@ function xcopy($src, $dst)
 }
 
 /**
- * Copies one file via PHP "copy()" function
- * @param string $src Source file name (full path)
- * @param string $dst Destination file name (full path)
+ * Copies file or directory (recursive) via PHP "copy()" function.
+ *
+ * @param string $src Source file or directory
+ * @param string $dst Destination file or directory
  * @return bool
  */
-function copyFile($src, $dst)
+function copy(string $src, string $dst): bool
 {
-    return \copy($src, $dst);
-}
-
-/**
- * Copies directory (recursive) via PHP "copy()" function
- * @param string $src Source dir name (full path)
- * @param string $dst Destination dir name (full path)
- * @return bool
- */
-function copyDir($src, $dst)
-{
-    $list = array_diff(scandir($src), ['.', '..']);
-    foreach ($list as $file) {
-        if (is_dir($src . DIRECTORY_SEPARATOR . $file)) {
-            if (!file_exists($dst . DIRECTORY_SEPARATOR . $file)) {
-                mkdir($dst . DIRECTORY_SEPARATOR . $file);
+    if (is_file($src)) {
+        return \copy($src, $dst);
+    }
+    @mkdir($dst);
+    $iterator = new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS);
+    $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($files as $file) {
+        if ($file->isDir()) {
+            if (!file_exists($dst . DIRECTORY_SEPARATOR . $files->getSubPathName())) {
+                $res = @mkdir($dst . DIRECTORY_SEPARATOR . $files->getSubPathName());
+            } else {
+                $res = true;
             }
-            $res = copyDir($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
         } else {
-            $res = copyFile($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+            $res = \copy($file, $dst . DIRECTORY_SEPARATOR . $files->getSubPathName());
         }
         if (false === $res) {
-            return false;
+            return $res;
         }
     }
     return true;
-}
-
-/**
- * Copies file or directory (recursive) via PHP "copy()" function
- * @param string $src Source dir name (full path)
- * @param string $dst Destination dir name (full path)
- * @return bool
- */
-function copy($src, $dst)
-{
-    if (is_dir($src)) {
-        return copyDir($src, $dst);
-    }
-    return copyFile($src, $dst);
 }
