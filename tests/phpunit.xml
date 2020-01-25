@@ -6,7 +6,7 @@
 
     <testsuites>
         <testsuite name="Fs">
-            <directory phpVersionOperator=">=" phpVersion="7.0">Fs</directory>
+            <directory phpVersionOperator=">=" phpVersion="7.2">Fs</directory>
         </testsuite>
     </testsuites>
 

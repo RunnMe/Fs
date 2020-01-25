@@ -2,13 +2,14 @@
 
 namespace Runn\tests\Fs\functions;
 
+use PHPUnit\Framework\TestCase;
 use function Runn\Fs\canCp;
 use function Runn\Fs\canXcopy;
 use function Runn\Fs\isMacos;
 use function Runn\Fs\isWindows;
 use function Runn\Fs\isLinux;
 
-class functionsTest extends \PHPUnit_Framework_TestCase
+class functionsTest extends TestCase
 {
 
     public function testIsWindows()

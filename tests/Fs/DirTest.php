@@ -2,17 +2,21 @@
 
 namespace Runn\tests\Fs\Dir;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
+use Runn\Fs\Exceptions\DirAlreadyExists;
 use Runn\Fs\Exceptions\DirNotReadable;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\File;
 use Runn\Fs\FileCollection;
 
-class DirTest extends \PHPUnit_Framework_TestCase
+class DirTest extends TestCase
 {
 
     protected $testCases = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->testCases['file_exists'] = tempnam(sys_get_temp_dir(), 'FsTest');
         $this->testCases['dir_exists'] = sys_get_temp_dir() . '/FsTest_dir_exists';
@@ -46,23 +50,18 @@ class DirTest extends \PHPUnit_Framework_TestCase
         return $this->testCases[$case];
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\InvalidDir
-     */
     public function testSetPathNotDir()
     {
+        $this->expectException(InvalidDir::class);
+
         $dir = new Dir;
         $dir->setPath($this->getPath('file_exists'));
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\InvalidDir
-     */
     public function testConstructNotDir()
     {
+        $this->expectException(InvalidDir::class);
         $dir = new Dir($this->getPath('file_exists'));
-        $this->fail();
     }
 
     public function testConstructRealDir()
@@ -74,14 +73,11 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->getPath('dir_exists'), $dir->getPath());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirAlreadyExists
-     */
     public function testCreateAlreadyExists()
     {
+        $this->expectException(DirAlreadyExists::class);
         $dir = new Dir($this->getPath('dir_exists'));
         $dir->create();
-        $this->fail();
     }
 
     public function testCreate()
@@ -99,14 +95,11 @@ class DirTest extends \PHPUnit_Framework_TestCase
         rmdir($path);
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testListEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $dir = new Dir;
         $dir->list();
-        $this->fail();
     }
 
     public function testListEmptyDir()
@@ -122,6 +115,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
     public function testListNotReadableDir()
     {
         if (\Runn\Fs\isWindows()) {
+            $this->assertTrue(true);
             return;
         }
 
@@ -134,7 +128,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
             $dir->list();
 
         } catch (DirNotReadable $e) {
-            return;
+            $this->assertTrue(true);
         } finally {
             chmod($path, 0777);
         }
@@ -191,7 +185,7 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new FileCollection($subs ), $dir->list(true));
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->testCases['list'][4] . '/44');
         rmdir($this->testCases['list'][4] . '/43');

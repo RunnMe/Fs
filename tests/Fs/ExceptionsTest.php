@@ -2,6 +2,7 @@
 
 namespace Runn\tests\Fs\Exception;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Exception;
 use Runn\Fs\Exceptions\CopyError;
 use Runn\Fs\Exceptions\DirAlreadyExists;
@@ -21,7 +22,7 @@ use Runn\Fs\Exceptions\InvalidFileClass;
 use Runn\Fs\Exceptions\MkDirError;
 use Runn\Fs\Exceptions\SymlinkError;
 
-class ExceptionsTest extends \PHPUnit_Framework_TestCase
+class ExceptionsTest extends TestCase
 {
 
     public function testInvalidFileClass()

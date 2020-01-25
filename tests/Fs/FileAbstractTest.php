@@ -2,7 +2,11 @@
 
 namespace Runn\tests\Fs\FileAbstract;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
+use Runn\Fs\Exceptions\InvalidFileClass;
 use Runn\Fs\File;
 use Runn\Fs\FileAbstract;
 use Runn\Fs\FileInterface;
@@ -18,12 +22,12 @@ class FakeFileClass extends FileAbstract
     }
 }
 
-class FileAbstractTest extends \PHPUnit_Framework_TestCase
+class FileAbstractTest extends TestCase
 {
 
     protected $testCases = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->testCases['file_exists'] = tempnam(sys_get_temp_dir(), 'FsTest');
         $this->testCases['file_not_exists'] = $this->testCases['file_exists'] . 'notexists';
@@ -51,11 +55,9 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($file->exists());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\InvalidFileClass
-     */
     public function testFactoryFileInvalidClass()
     {
+        $this->expectException(InvalidFileClass::class);
         $file = FileAbstract::instance($this->getPath('file_exists'), \stdClass::class);
     }
 
@@ -115,14 +117,11 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame((string)$file, $file->getPath());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testEmptyExists()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->exists();
-        $this->fail();
     }
 
     public function testExists()
@@ -134,64 +133,47 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($file->exists());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testIsFileEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->isFile();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testIsFileNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new FakeFileClass($this->getPath('file_not_exists'));
         $res = $file->isFile();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testIsDirEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->isDir();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testIsDirNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new FakeFileClass($this->getPath('file_not_exists'));
         $res = $file->isDir();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testIsLinkEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->isLink();
         $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testIsLinkNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new FakeFileClass($this->getPath('file_not_exists'));
         $res = $file->isLink();
-        $this->fail();
     }
 
     public function testIsFileTrue()
@@ -221,29 +203,24 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($file->isLink());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testIsReadableEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->isReadable();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testIsReadableNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new FakeFileClass($this->getPath('file_not_exists'));
         $res = $file->isReadable();
-        $this->fail();
     }
 
     public function testIsReadable()
     {
         if (\Runn\Fs\isWindows()) {
+            $this->assertTrue(true);
             return;
         }
 
@@ -254,24 +231,18 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($file->isReadable());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testIsWritableEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new FakeFileClass;
         $res = $file->isWritable();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testIsWritableNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new FakeFileClass($this->getPath('file_not_exists'));
         $res = $file->isWritable();
-        $this->fail();
     }
 
     public function testIsWritable()
@@ -283,7 +254,7 @@ class FileAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($file->isWritable());
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         chmod($this->testCases['file_not_readable'], 0777);
         unlink($this->testCases['file_not_readable']);

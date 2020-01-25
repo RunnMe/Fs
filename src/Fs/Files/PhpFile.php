@@ -16,12 +16,12 @@ class PhpFile
     extends FileWithSerializer
 {
 
-    public function getSerializer(): /*?*/SerializerInterface
+    public function getSerializer(): ?SerializerInterface
     {
         return new Php();
     }
 
-    public function setSerializer(/*?*/SerializerInterface $serializer)
+    public function setSerializer(?SerializerInterface $serializer)
     {
         throw new \BadMethodCallException();
     }

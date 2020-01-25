@@ -2,24 +2,22 @@
 
 namespace Runn\tests\Fs\File;
 
+use PHPUnit\Framework\TestCase;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\File;
 
-class FileMtimeTest extends \PHPUnit_Framework_TestCase
+class FileMtimeTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testMtimeEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new File();
         $file->mtime();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testMtimeNotExistingPath()
     {
         $filename = sys_get_temp_dir() . '/FsTest_mtime';
@@ -28,6 +26,7 @@ class FileMtimeTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertFileNotExists($filename);
 
+        $this->expectException(FileNotExists::class);
         $file = new File($filename);
         $file->mtime();
     }
@@ -35,6 +34,7 @@ class FileMtimeTest extends \PHPUnit_Framework_TestCase
     public function testMtimeNotReadable()
     {
         if (\Runn\Fs\isWindows()) {
+            $this->assertTrue(true);
             return;
         }
 
@@ -49,6 +49,7 @@ class FileMtimeTest extends \PHPUnit_Framework_TestCase
             $file->mtime();
 
         } catch (FileNotReadable $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             chmod($filename, 0777);

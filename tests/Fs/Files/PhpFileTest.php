@@ -2,42 +2,36 @@
 
 namespace Runn\tests\Fs\Files\PhpFile;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Core\Std;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Files\PhpFile;
 use Runn\Serialization\Serializers\PassThru;
 
-class PhpFileTest extends \PHPUnit_Framework_TestCase
+class PhpFileTest extends TestCase
 {
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testSetSerializer()
     {
+        $this->expectException(\BadMethodCallException::class);
         $file = new PhpFile();
         $file->setSerializer(new PassThru());
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testLoadEmpty()
     {
+        $this->expectException(EmptyPath::class);
         $file = new PhpFile();
         $file->load();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testLoadNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $file = new PhpFile(__DIR__ . '/This/File/Does/Not/Exist');
         $file->load();
-        $this->fail();
     }
 
     public function testLoadNotReadable()
@@ -53,6 +47,7 @@ class PhpFileTest extends \PHPUnit_Framework_TestCase
             $file = new PhpFile($filename);
             $file->load();
         } catch (FileNotReadable $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             chmod($filename, 0777);

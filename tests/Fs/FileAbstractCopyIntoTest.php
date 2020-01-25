@@ -2,6 +2,10 @@
 
 namespace Runn\tests\Fs\FileAbstract;
 
+use PHPUnit\Framework\TestCase;
+use Runn\Fs\Exceptions\DirNotExists;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
 use function Runn\Fs\canXcopy;
 use Runn\Fs\Dir;
 use Runn\Fs\Exceptions\CopyError;
@@ -17,41 +21,33 @@ class FakeFileCopyToClass extends FileAbstract
     }
 }
 
-class FileAbstractCopyIntoTest extends \PHPUnit_Framework_TestCase
+class FileAbstractCopyIntoTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testSourceEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $source = new FakeFileCopyToClass();
         $source->copyInto(new Dir(__DIR__));
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testSourceNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $source = new FakeFileCopyToClass(__FILE__ . uniqid());
         $source->copyInto(new Dir(__DIR__));
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testTargetEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $source = new FakeFileCopyToClass(__FILE__);
         $source->copyInto(new Dir());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirNotExists
-     */
     public function testTargetNotExists()
     {
+        $this->expectException(DirNotExists::class);
         $source = new FakeFileCopyToClass(__FILE__);
         $source->copyInto(new Dir(__DIR__ . uniqid()));
     }
