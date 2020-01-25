@@ -13,6 +13,11 @@ interface FileInterface
 {
 
     /**
+     * @return string|null
+     */
+    public function getRealPath(): ?string;
+
+    /**
      * @return string
      */
     public function __toString();

@@ -43,15 +43,4 @@ class PathAwareTraitTest extends TestCase
         $this->assertSame('bar', $obj->getPath('foo/'));
     }
 
-    /*
-    public function testGetRealPath()
-    {
-        $obj = new class implements PathAwareInterface {
-            use PathAwareTrait;
-        };
-
-        $this->assertNull($obj->getRealPath());
-    }
-    */
-
 }

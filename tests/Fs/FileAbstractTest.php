@@ -109,6 +109,22 @@ class FileAbstractTest extends TestCase
         $this->assertSame($path2, $file->getPath());
     }
 
+    public function testGetRealPath()
+    {
+        $obj = new FakeFileClass();
+
+        $this->assertNull($obj->getRealPath());
+
+        $obj->setPath('/foo/bar/baz');
+        $this->assertNull($obj->getRealPath());
+
+        $obj->setPath(__DIR__);
+        $this->assertSame(__DIR__, $obj->getRealPath());
+
+        $obj->setPath(__DIR__ . '/../' . basename(__DIR__));
+        $this->assertSame(__DIR__, $obj->getRealPath());
+    }
+
     public function testToString()
     {
         $randomPath = md5(time());
