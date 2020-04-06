@@ -10,18 +10,7 @@ use Runn\Fs\Exception;
  * Class FileNullContents
  * @package Runn\Fs\Exceptions
  */
-class FileNullContents
-    extends Exception
+class FileNullContents extends Exception
 {
-
-    /**
-     * FileNullContents constructor.
-     * @param string $message
-     * @param \Throwable|null $previous
-     */
-    public function __construct($message = '', \Throwable $previous = null)
-    {
-        parent::__construct($message, self::CODES['FILE_NULL_CONTENTS'], $previous);
-    }
 
 }
