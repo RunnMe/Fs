@@ -41,6 +41,7 @@ class PathAwareTraitTest extends TestCase
         $obj->setPath('foo/bar');
         $this->assertSame('foo/bar', $obj->getPath());
         $this->assertSame('bar', $obj->getPath('foo/'));
+        $this->assertSame('foo/bar', $obj->getPath('baz'));
     }
 
 }
