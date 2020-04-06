@@ -3,13 +3,12 @@
 namespace Runn\Fs;
 
 /**
- * Common interface for all files, dirs and links
+ * Common interface for all files, directories and links
  *
  * Interface FileInterface
  * @package Runn\Fs
  */
-interface FileInterface
-    extends PathAwareInterface
+interface FileInterface extends PathAwareInterface
 {
 
     /**
@@ -64,6 +63,12 @@ interface FileInterface
     public function touch($time = null);
 
     /**
+     * @param bool $clearstatcache
+     * @return int
+     */
+    public function mtime($clearstatcache = true);
+
+    /**
      * @param \Runn\Fs\Dir $dir
      * @param string|null $targetName
      * @return self
@@ -76,11 +81,5 @@ interface FileInterface
      * @return self
      */
     public function copyInto(Dir $dir, string $targetName = null): FileInterface;
-
-    /**
-     * @param bool $clearstatcache
-     * @return int
-     */
-    public function mtime($clearstatcache = true);
 
 }
