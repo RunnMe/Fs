@@ -38,6 +38,64 @@ function isLinux()
 }
 
 /**
+ * Can use *nix "rm" console command?
+ * @codeCoverageIgnore
+ * @return bool
+ */
+function canRm()
+{
+    if (!isWindows()) {
+        exec('\\type \\rm &>/dev/null', $out, $code);
+        if (0 === $code) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Can use Windows "rd" console command?
+ * @codeCoverageIgnore
+ * @return bool
+ */
+function canRd()
+{
+    if (isWindows()) {
+        exec('rd /? >NUL', $out, $code);
+        if (0 === $code) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Removes files or directories by *nix 'rm' command
+ * @param $path
+ * @param bool $recursively
+ * @return bool
+ */
+function rm($path, $recursively = true)
+{
+    $cmd = sprintf('\\rm -' . ($recursively ? 'r' : '') . 'f  "%s" &>/dev/null', escapeshellarg($path));
+    exec($cmd, $out, $code);
+    return (bool)$code;
+}
+
+/**
+ * Removes files or directories by Windows 'rd' command
+ * @param $path
+ * @param bool $recursively
+ * @return bool
+ */
+function rd($path, $recursively = true)
+{
+    $cmd = sprintf('rd ' . ($recursively ? '/s' : '') . ' /q "%s" >NUL', escapeshellarg($path));
+    exec($cmd, $out, $code);
+    return (bool)$code;
+}
+
+/**
  * Can use "cp" console command?
  * @codeCoverageIgnore
  * @return bool
@@ -45,7 +103,7 @@ function isLinux()
 function canCp()
 {
     if (!isWindows()) {
-        exec('\\type cp &>/dev/null', $out, $code);
+        exec('\\type \\cp &>/dev/null', $out, $code);
         if (0 === $code) {
             return true;
         }

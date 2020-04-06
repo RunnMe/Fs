@@ -16,6 +16,9 @@ class FakeFileCopyToClass extends FileAbstract
     public function create() {
         return $this;
     }
+    public function delete() {
+        return $this;
+    }
     public function mtime($clearstatcache = true) {
         return 0;
     }

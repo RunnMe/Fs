@@ -3,13 +3,14 @@
 namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\DirAlreadyExists;
+use Runn\Fs\Exceptions\DirNotDeletable;
 use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\DirNotReadable;
+use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\InvalidDir;
 use Runn\Fs\Exceptions\MkDirError;
 
-class Dir
-    extends FileAbstract
+class Dir extends FileAbstract
 {
 
     /**
@@ -37,11 +38,13 @@ class Dir
     }
 
     /**
+     * Creates directory if one does not exist
+     *
      * @param int $createMode
      * @return $this
-     * @throws \Runn\Fs\Exceptions\EmptyPath
-     * @throws \Runn\Fs\Exceptions\DirAlreadyExists
-     * @throws \Runn\Fs\Exceptions\MkDirError
+     * @throws EmptyPath
+     * @throws DirAlreadyExists
+     * @throws MkDirError
      */
     public function create(int $createMode = 0755)
     {
@@ -59,6 +62,9 @@ class Dir
     /**
      * @param int $createMode
      * @return $this
+     * @throws DirAlreadyExists
+     * @throws Exceptions\EmptyPath
+     * @throws MkDirError
      */
     public function make(int $createMode = 0755)
     {
@@ -67,6 +73,31 @@ class Dir
         }
         $this->create($createMode);
         return $this;
+    }
+
+    /**
+     * Deletes directory - recursively
+     * @return $this
+     * @throws DirNotDeletable
+     *
+     * @todo: delete by PHP, without shell commands
+     */
+    public function delete()
+    {
+        if (canRm()) {
+            $res = rm($this->getRealPath());
+            if (false === $res) {
+                throw new DirNotDeletable();
+            }
+            return $this;
+        }
+        if (canRd()) {
+            $res = rd($this->getRealPath());
+            if (false === $res) {
+                throw new DirNotDeletable();
+            }
+            return $this;
+        }
     }
 
     /**
@@ -103,7 +134,7 @@ class Dir
      * @param bool $clearstatcache
      * @param bool $only Only own directory's mtime, no-recursive
      * @return int
-     * @throws \Runn\Fs\Exceptions\EmptyPath
+     * @throws EmptyPath
      * @throws \Runn\Fs\Exceptions\DirNotExists
      * @throws \Runn\Fs\Exceptions\DirNotReadable
      */

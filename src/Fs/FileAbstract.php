@@ -168,9 +168,16 @@ abstract class FileAbstract
     }
 
     /**
+     * Creates file or link or directory if one does not exist
      * @return $this
      */
     abstract public function create();
+
+    /**
+     * Deletes file or link or directory - recursively
+     * @return $this
+     */
+    abstract public function delete();
 
     /**
      * @param \DateTimeInterface|int|null $time
