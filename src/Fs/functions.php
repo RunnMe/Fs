@@ -1,17 +1,19 @@
 <?php
 
 namespace Runn\Fs;
-use function foo\func;
+
+/**
+ * "IS" functions
+ */
 
 /**
  * Is current OS Windows?
  * @codeCoverageIgnore
  * @return bool
  */
-function isWindows()
+function isWindows():bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'Windows' */
-    return in_array(PHP_OS, ['WIN32', 'WINNT', 'Windows']);
+    return PHP_OS_FAMILY === 'Windows';
 }
 
 /**
@@ -19,10 +21,9 @@ function isWindows()
  * @codeCoverageIgnore
  * @return bool
  */
-function isMacos()
+function isMacos():bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'Darwin' */
-    return in_array(PHP_OS, ['Darwin']);
+    return PHP_OS_FAMILY === 'Darwin';
 }
 
 /**
@@ -30,19 +31,21 @@ function isMacos()
  * @codeCoverageIgnore
  * @return bool
  */
-function isLinux()
+function isLinux():bool
 {
-    /** @7.2 PHP_OS_FAMILY  != 'BSD', 'Linux' */
-    return false !== stripos(PHP_OS, 'bsd') || false !== stripos(PHP_OS, 'gnu')
-        || false !== stripos(PHP_OS, 'linux') || 0 === stripos(PHP_OS, 'dragonfly');
+    return !isWindows() && !isMacos();
 }
+
+/**
+ * "CAN" functions
+ */
 
 /**
  * Can use *nix "rm" console command?
  * @codeCoverageIgnore
  * @return bool
  */
-function canRm()
+function canRm():bool
 {
     if (!isWindows()) {
         exec('\\type \\rm &>/dev/null', $out, $code);
@@ -70,37 +73,11 @@ function canRd()
 }
 
 /**
- * Removes files or directories by *nix 'rm' command
- * @param $path
- * @param bool $recursively
- * @return bool
- */
-function rm($path, $recursively = true)
-{
-    $cmd = sprintf('\\rm -' . ($recursively ? 'r' : '') . 'f  "%s" &>/dev/null', escapeshellarg($path));
-    exec($cmd, $out, $code);
-    return (bool)$code;
-}
-
-/**
- * Removes files or directories by Windows 'rd' command
- * @param $path
- * @param bool $recursively
- * @return bool
- */
-function rd($path, $recursively = true)
-{
-    $cmd = sprintf('rd ' . ($recursively ? '/s' : '') . ' /q "%s" >NUL', escapeshellarg($path));
-    exec($cmd, $out, $code);
-    return (bool)$code;
-}
-
-/**
  * Can use "cp" console command?
  * @codeCoverageIgnore
  * @return bool
  */
-function canCp()
+function canCp():bool
 {
     if (!isWindows()) {
         exec('\\type \\cp &>/dev/null', $out, $code);
@@ -116,7 +93,7 @@ function canCp()
  * @codeCoverageIgnore
  * @return bool
  */
-function canXcopy()
+function canXcopy():bool
 {
     if (isWindows()) {
         exec('xcopy /? >NUL', $out, $code);
@@ -128,6 +105,36 @@ function canXcopy()
 }
 
 /**
+ * Low-level functions
+ */
+
+/**
+ * Removes files or directories by *nix 'rm' command
+ * @param $path
+ * @param bool $recursively
+ * @return bool
+ */
+function rm($path, $recursively = true):bool
+{
+    $cmd = sprintf('\\rm -' . ($recursively ? 'r' : '') . 'f  "%s" &>/dev/null', escapeshellarg($path));
+    exec($cmd, $out, $code);
+    return 0 == $code;
+}
+
+/**
+ * Removes files or directories by Windows 'rd' command
+ * @param $path
+ * @param bool $recursively
+ * @return bool
+ */
+function rd($path, $recursively = true):bool
+{
+    $cmd = sprintf('rd ' . ($recursively ? '/s' : '') . ' /q "%s" >NUL', escapeshellarg($path));
+    exec($cmd, $out, $code);
+    return 0 == $code;
+}
+
+/**
  * @todo
  * @codeCoverageIgnore
  * Copies source file to destination via "cp" command
@@ -135,7 +142,7 @@ function canXcopy()
  * @param string $dst
  * @return int
  */
-function cpFile($src, $dst)
+function cpFile($src, $dst):bool
 {
     if (isMacos()) {
 
@@ -143,7 +150,7 @@ function cpFile($src, $dst)
         $cmd = '\\cp -f --no-preserve=timestamps --strip-trailing-slashes "' . $src . '" "' . $dst . '" &>/dev/null';
     }
     exec($cmd, $out, $code);
-    return $code;
+    return 0 == $code;
 }
 
 /**
@@ -154,7 +161,7 @@ function cpFile($src, $dst)
  * @param string $dst
  * @return int
  */
-function xcopy($src, $dst)
+function xcopy($src, $dst):bool
 {
     $cmd = 'xcopy "' . $src. '" "' . $dst . '" /i /s /e /h /r /y 2>/NUL';
     if (is_dir($src)) {
@@ -163,7 +170,7 @@ function xcopy($src, $dst)
         $cmd = 'echo F | ' . $cmd;
     }
     exec($cmd, $out, $code);
-    return $code;
+    return 0 == $code;
 }
 
 /**
@@ -172,7 +179,7 @@ function xcopy($src, $dst)
  * @param string $dst Destination file name (full path)
  * @return bool
  */
-function copyFile($src, $dst)
+function copyFile($src, $dst):bool
 {
     return \copy($src, $dst);
 }
@@ -183,7 +190,7 @@ function copyFile($src, $dst)
  * @param string $dst Destination dir name (full path)
  * @return bool
  */
-function copyDir($src, $dst)
+function copyDir($src, $dst):bool
 {
     $list = array_diff(scandir($src), ['.', '..']);
     foreach ($list as $file) {
@@ -206,7 +213,7 @@ function copyDir($src, $dst)
  * @param string $dst Destination dir name (full path)
  * @return bool
  */
-function copy($src, $dst)
+function copy($src, $dst):bool
 {
     if (is_dir($src)) {
         return copyDir($src, $dst);
