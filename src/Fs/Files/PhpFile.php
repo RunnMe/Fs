@@ -12,8 +12,7 @@ use Runn\Serialization\Serializers\Php;
  * Class PhpFile
  * @package Runn\Fs\Files
  */
-class PhpFile
-    extends FileWithSerializer
+class PhpFile extends FileWithSerializer
 {
 
     public function getSerializer(): ?SerializerInterface

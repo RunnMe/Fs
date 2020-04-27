@@ -4,6 +4,7 @@ namespace Runn\Fs;
 
 use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileAlreadyExists;
+use Runn\Fs\Exceptions\FileNotDeletable;
 use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
@@ -16,9 +17,7 @@ use Runn\Fs\Exceptions\InvalidFile;
  * Class File
  * @package Runn\Fs
  */
-class File
-    extends FileAbstract
-    implements FileAsStorageInterface
+class File extends FileAbstract implements FileAsStorageInterface
 {
 
     use FileAsStorageTrait;
@@ -64,6 +63,32 @@ class File
         }
         return $this;
     }
+
+    /**
+     * Deletes directory - recursively
+     * @return $this
+     * @throws FileNotDeletable
+     *
+     * @todo: delete by PHP, without shell commands
+     */
+    public function delete()
+    {
+        if (canRm()) {
+            $res = rm($this->getRealPath(), false);
+            if (false === $res) {
+                throw new FileNotDeletable();
+            }
+            return $this;
+        }
+        if (canRd()) {
+            $res = rd($this->getRealPath(), false);
+            if (false === $res) {
+                throw new FileNotDeletable();
+            }
+            return $this;
+        }
+    }
+
 
     /**
      * @param bool $clearstatcache

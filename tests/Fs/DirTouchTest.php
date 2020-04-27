@@ -2,27 +2,26 @@
 
 namespace Runn\tests\Fs\Dir;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
-use Runn\Fs\File;
+use Runn\Fs\Exceptions\DirNotExists;
+use Runn\Fs\Exceptions\EmptyPath;
 
-class DirTouchTest extends \PHPUnit_Framework_TestCase
+class DirTouchTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testTouchEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $dir = new Dir();
         $dir->touch();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirNotExists
-     */
     public function testTouchDirNotExists()
     {
         $path = sys_get_temp_dir() . '/FsDirTest_touch';
+
+        $this->expectException(DirNotExists::class);
         $dir = new Dir($path);
         $dir->touch();
     }
@@ -39,7 +38,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         touch($path, time()-1000);
         clearstatcache($path);
         $this->assertDirectoryExists($path);
-        $this->assertEquals(time()-1000, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta(time()-1000, filemtime($path), 1);
 
         $dir = new Dir($path);
         $time = time();
@@ -48,7 +47,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
         clearstatcache();
-        $this->assertEquals($time, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta($time, filemtime($path), 1);
 
         rmdir($path);
     }
@@ -65,7 +64,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         touch($path, time()-1000);
         clearstatcache($path);
         $this->assertDirectoryExists($path);
-        $this->assertEquals(time()-1000, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta(time()-1000, filemtime($path), 1);
 
         $dir = new Dir($path);
         $time = time() - 10;
@@ -74,14 +73,14 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
         clearstatcache();
-        $this->assertEquals($time, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta($time, filemtime($path), 1);
 
         $ret = $dir->touch($time+2);
 
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
         clearstatcache();
-        $this->assertEquals($time+2, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta($time+2, filemtime($path), 1);
 
         rmdir($path);
     }
@@ -98,7 +97,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         touch($path, time()-1000);
         clearstatcache($path);
         $this->assertDirectoryExists($path);
-        $this->assertEquals(time()-1000, filemtime($path), '', 1);
+        $this->assertEqualsWithDelta(time()-1000, filemtime($path), 1);
 
         $dir = new Dir($path);
         $time = (new \DateTime())->sub(new \DateInterval('PT10S'));
@@ -107,7 +106,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
         clearstatcache();
-        $this->assertEquals($time->getTimestamp(), filemtime($path), '', 1);
+        $this->assertEqualsWithDelta($time->getTimestamp(), filemtime($path), 1);
 
         $time->add(new \DateInterval('PT2S'));
         $ret = $dir->touch($time);
@@ -115,7 +114,7 @@ class DirTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $dir);
         $this->assertDirectoryExists($path);
         clearstatcache();
-        $this->assertEquals($time->getTimestamp(), filemtime($path), '', 1);
+        $this->assertEqualsWithDelta($time->getTimestamp(), filemtime($path), 1);
 
         rmdir($path);
     }

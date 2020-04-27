@@ -2,20 +2,18 @@
 
 namespace Runn\tests\Fs\Files\SerializedFile;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Files\SerializedFile;
 use Runn\Serialization\Serializers\PassThru;
 
-class SerializedFileTest extends \PHPUnit_Framework_TestCase
+class SerializedFileTest extends TestCase
 {
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testSetSerializer()
     {
+        $this->expectException(\BadMethodCallException::class);
         $file = new SerializedFile();
         $file->setSerializer(new PassThru());
-        $this->fail();
     }
 
     public function testSave()

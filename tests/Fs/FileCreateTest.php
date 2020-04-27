@@ -2,17 +2,18 @@
 
 namespace Runn\tests\Fs\File;
 
+use PHPUnit\Framework\TestCase;
+use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\FileAlreadyExists;
+use Runn\Fs\Exceptions\FileNotWritable;
 use Runn\Fs\File;
 
-class FileCreateTest extends \PHPUnit_Framework_TestCase
+class FileCreateTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testCreateEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new File();
         $file->create();
     }
@@ -39,6 +40,7 @@ class FileCreateTest extends \PHPUnit_Framework_TestCase
             $file = new File($filename);
             $file->create();
         } catch (FileAlreadyExists $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             unlink($filename);
@@ -47,9 +49,6 @@ class FileCreateTest extends \PHPUnit_Framework_TestCase
         $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotWritable
-     */
     public function testCreateNotWritable()
     {
         $filename = sys_get_temp_dir() . '/Some/Fake/Dir/Which/Is/Not/Exist/FsTest_touch';
@@ -57,6 +56,7 @@ class FileCreateTest extends \PHPUnit_Framework_TestCase
             unlink($filename);
         }
 
+        $this->expectException(FileNotWritable::class);
         $file = new File($filename);
         $file->create();
     }
