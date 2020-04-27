@@ -8,14 +8,16 @@ namespace Runn\Fs;
  *
  * @implements \Runn\Fs\PathAwareInterface
  */
-trait PathAwareTrait
-    // implements PathAwareInterface
+trait PathAwareTrait // implements PathAwareInterface
 {
 
     /** @var string $path */
     protected $path = '';
 
     /**
+     * Sets the path (for example path in filesystem)
+     * If prefix is set, the full path will be set as prefix and path concatenated
+     *
      * @param string $path
      * @param string $prefix
      * @return $this
@@ -27,6 +29,9 @@ trait PathAwareTrait
     }
 
     /**
+     * Returns the path
+     * If prefix is set returns a relative path based on prefix
+     *
      * @param string $prefix
      * @return string
      */

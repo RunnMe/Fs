@@ -11,8 +11,7 @@ use Runn\Serialization\Serializers\Yaml;
  * Class YamlFile
  * @package Runn\Fs\Files
  */
-class YamlFile
-    extends FileWithSerializer
+class YamlFile extends FileWithSerializer
 {
 
     public function setSerializer(?SerializerInterface $serializer)

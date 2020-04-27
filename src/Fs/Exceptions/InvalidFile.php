@@ -10,18 +10,7 @@ use Runn\Fs\Exception;
  * Class InvalidFile
  * @package Runn\Fs\Exceptions
  */
-class InvalidFile
-    extends Exception
+class InvalidFile extends Exception
 {
-
-    /**
-     * InvalidFile constructor.
-     * @param string $message
-     * @param \Throwable|null $previous
-     */
-    public function __construct($message = '', \Throwable $previous = null)
-    {
-        parent::__construct($message, self::CODES['INVALID_FILE'], $previous);
-    }
 
 }

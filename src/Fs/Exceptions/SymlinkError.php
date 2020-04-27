@@ -10,18 +10,7 @@ use Runn\Fs\Exception;
  * Class SymlinkError
  * @package Runn\Fs\Exceptions
  */
-class SymlinkError
-    extends Exception
+class SymlinkError extends Exception
 {
-
-    /**
-     * SymlinkError constructor.
-     * @param string $message
-     * @param \Throwable|null $previous
-     */
-    public function __construct($message = '', \Throwable $previous = null)
-    {
-        parent::__construct($message, self::CODES['SYMLINK_ERROR'], $previous);
-    }
 
 }

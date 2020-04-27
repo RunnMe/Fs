@@ -2,16 +2,17 @@
 
 namespace Runn\tests\Fs\File;
 
+use PHPUnit\Framework\TestCase;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotWritable;
 use Runn\Fs\File;
 
-class FileTouchTest extends \PHPUnit_Framework_TestCase
+class FileTouchTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testTouchEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new File();
         $file->touch();
     }
@@ -30,17 +31,17 @@ class FileTouchTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ret, $file);
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals(time(), filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta(time(), filemtime($filename), 1);
 
         touch($filename, time()-1000);
         clearstatcache($filename);
-        $this->assertEquals(time()-1000, filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta(time()-1000, filemtime($filename), 1);
 
         $file->touch();
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals(time(), filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta(time(), filemtime($filename), 1);
 
         unlink($filename);
     }
@@ -59,13 +60,13 @@ class FileTouchTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time, filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta($time, filemtime($filename), 1);
 
         $file->touch($time+2);
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time+2, filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta($time+2, filemtime($filename), 1);
 
         unlink($filename);
     }
@@ -84,21 +85,18 @@ class FileTouchTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time->getTimestamp(), filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta($time->getTimestamp(), filemtime($filename), 1);
 
         $time->add(new \DateInterval('PT2S'));
         $file->touch($time);
 
         $this->assertFileExists($filename);
         clearstatcache();
-        $this->assertEquals($time->getTimestamp(), filemtime($filename), '', 1);
+        $this->assertEqualsWithDelta($time->getTimestamp(), filemtime($filename), 1);
 
         unlink($filename);
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotWritable
-     */
     public function testTouchNotWritable()
     {
         $filename = sys_get_temp_dir() . '/Some/Fake/Dir/Which/Is/Not/Exist/FsTest_touch';
@@ -106,6 +104,7 @@ class FileTouchTest extends \PHPUnit_Framework_TestCase
             unlink($filename);
         }
 
+        $this->expectException(FileNotWritable::class);
         $file = new File($filename);
         $file->touch();
     }

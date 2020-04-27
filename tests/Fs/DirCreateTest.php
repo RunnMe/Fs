@@ -2,18 +2,18 @@
 
 namespace Runn\tests\Fs\Dir;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
 use Runn\Fs\Exceptions\DirAlreadyExists;
+use Runn\Fs\Exceptions\EmptyPath;
 use Runn\Fs\Exceptions\MkDirError;
 
-class DirCreateTest extends \PHPUnit_Framework_TestCase
+class DirCreateTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testCreateEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $dir = new Dir();
         $dir->create();
     }
@@ -26,13 +26,13 @@ class DirCreateTest extends \PHPUnit_Framework_TestCase
         try {
             $dir = new Dir($path);
             $dir->create();
+            $this->fail();
         } catch (DirAlreadyExists $e) {
-            return;
+            $this->assertTrue(true);
         } finally {
             rmdir($path);
         }
 
-        $this->fail();
     }
 
     public function testCreateMkDirError()

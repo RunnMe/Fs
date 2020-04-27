@@ -65,6 +65,17 @@ abstract class FileAbstract
     }
 
     /**
+     * @return string|null
+     */
+    public function getRealPath(): ?string
+    {
+        if (empty($this->getPath())) {
+            return null;
+        }
+        return realpath($this->getPath()) ?: null;
+    }
+
+    /**
      * @return bool
      * @throws \Runn\Fs\Exceptions\EmptyPath
      */
@@ -157,9 +168,16 @@ abstract class FileAbstract
     }
 
     /**
+     * Creates file or link or directory if one does not exist
      * @return $this
      */
     abstract public function create();
+
+    /**
+     * Deletes file or link or directory - recursively
+     * @return $this
+     */
+    abstract public function delete();
 
     /**
      * @param \DateTimeInterface|int|null $time

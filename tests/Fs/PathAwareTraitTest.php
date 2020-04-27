@@ -2,10 +2,11 @@
 
 namespace Runn\tests\Fs\PathAwareTrait;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\PathAwareInterface;
 use Runn\Fs\PathAwareTrait;
 
-class PathAwareTraitTest extends \PHPUnit_Framework_TestCase
+class PathAwareTraitTest extends TestCase
 {
 
     public function testSetPath()
@@ -40,6 +41,7 @@ class PathAwareTraitTest extends \PHPUnit_Framework_TestCase
         $obj->setPath('foo/bar');
         $this->assertSame('foo/bar', $obj->getPath());
         $this->assertSame('bar', $obj->getPath('foo/'));
+        $this->assertSame('foo/bar', $obj->getPath('baz'));
     }
 
 }

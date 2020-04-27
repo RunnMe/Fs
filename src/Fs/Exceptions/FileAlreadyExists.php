@@ -10,18 +10,7 @@ use Runn\Fs\Exception;
  * Class FileAlreadyExists
  * @package Runn\Fs\Exceptions
  */
-class FileAlreadyExists
-    extends Exception
+class FileAlreadyExists extends Exception
 {
-
-    /**
-     * FileAlreadyExists constructor.
-     * @param string $message
-     * @param \Throwable|null $previous
-     */
-    public function __construct($message = '', \Throwable $previous = null)
-    {
-        parent::__construct($message, self::CODES['FILE_ALREADY_EXISTS'], $previous);
-    }
 
 }
