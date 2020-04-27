@@ -2,7 +2,11 @@
 
 namespace Runn\tests\Fs\FileAbstract;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
+use Runn\Fs\Exceptions\DirNotExists;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\SymlinkError;
 use Runn\Fs\File;
 use Runn\Fs\FileAbstract;
@@ -12,46 +16,41 @@ class FakeFileLinkToClass extends FileAbstract
     public function create() {
         return $this;
     }
+    public function delete() {
+        return $this;
+    }
     public function mtime($clearstatcache = true) {
         return 0;
     }
 }
 
-class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
+class FileAbstractLinkIntoTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testSourceEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $source = new FakeFileLinkToClass();
         $source->linkInto(new Dir(__DIR__));
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testSourceNotExists()
     {
+        $this->expectException(FileNotExists::class);
         $source = new FakeFileLinkToClass(__FILE__ . uniqid());
         $source->linkInto(new Dir(__DIR__));
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testTargetEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $source = new FakeFileLinkToClass(__FILE__);
         $source->linkInto(new Dir());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirNotExists
-     */
     public function testTargetNotExists()
     {
+        $this->expectException(DirNotExists::class);
         $source = new FakeFileLinkToClass(__FILE__);
         $source->linkInto(new Dir(__DIR__ . uniqid()));
     }
@@ -67,6 +66,7 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
             $source = new FakeFileLinkToClass(__FILE__);
             $source->linkInto(new Dir($path));
         } catch (SymlinkError $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             unlink($file);
@@ -90,6 +90,7 @@ class FileAbstractLinkIntoTest extends \PHPUnit_Framework_TestCase
             $source = new FakeFileLinkToClass(__FILE__);
             $source->linkInto(new Dir($path));
         } catch (SymlinkError $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             chmod($path, 0777);

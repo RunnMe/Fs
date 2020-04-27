@@ -11,8 +11,7 @@ use Runn\Serialization\Serializers\Serialize;
  * Class SerializedFile
  * @package Runn\Fs\Files
  */
-class SerializedFile
-    extends FileWithSerializer
+class SerializedFile extends FileWithSerializer
 {
 
     public function getSerializer(): ?SerializerInterface

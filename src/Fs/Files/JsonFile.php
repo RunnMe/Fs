@@ -11,8 +11,7 @@ use Runn\Serialization\Serializers\Json;
  * Class JsonFile
  * @package Runn\Fs\Files
  */
-class JsonFile
-    extends FileWithSerializer
+class JsonFile extends FileWithSerializer
 {
 
     public function getSerializer(): ?SerializerInterface

@@ -2,20 +2,18 @@
 
 namespace Runn\tests\Fs\Files\JsonFile;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Files\YamlFile;
 use Runn\Serialization\Serializers\PassThru;
 
-class YamlFileTest extends \PHPUnit_Framework_TestCase
+class YamlFileTest extends TestCase
 {
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testSetSerializer()
     {
+        $this->expectException(\BadMethodCallException::class);
         $file = new YamlFile();
         $file->setSerializer(new PassThru());
-        $this->fail();
     }
 
     public function testSave()

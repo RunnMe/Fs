@@ -2,12 +2,13 @@
 
 namespace Runn\tests\Fs\FileCollection;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
 use Runn\Fs\File;
 use Runn\Fs\FileAbstract;
 use Runn\Fs\FileCollection;
 
-class FileCollectionTest extends \PHPUnit_Framework_TestCase
+class FileCollectionTest extends TestCase
 {
 
     public function testGetType()

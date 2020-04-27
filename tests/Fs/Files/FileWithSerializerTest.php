@@ -2,11 +2,12 @@
 
 namespace Runn\tests\Fs\Files\FileWithSerializer;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Files\FileWithSerializer;
 use Runn\Serialization\SerializerInterface;
 use Runn\Serialization\Serializers\PassThru;
 
-class FileWithSerializerTest extends \PHPUnit_Framework_TestCase
+class FileWithSerializerTest extends TestCase
 {
 
     public function testSetGetSerializer()

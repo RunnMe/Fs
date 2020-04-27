@@ -2,26 +2,24 @@
 
 namespace Runn\tests\Fs\File;
 
+use PHPUnit\Framework\TestCase;
+use Runn\Fs\Exceptions\EmptyPath;
+use Runn\Fs\Exceptions\FileNotExists;
 use Runn\Fs\Exceptions\FileNotReadable;
 use Runn\Fs\Exceptions\FileNotWritable;
+use Runn\Fs\Exceptions\FileNullContents;
 use Runn\Fs\File;
 
-class FileAsStorageTest extends \PHPUnit_Framework_TestCase
+class FileAsStorageTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testLoadEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $file = new File();
         $file->load();
-        $this->fail();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNotExists
-     */
     public function testLoadNotExists()
     {
         $filename = sys_get_temp_dir() . '/Some/Fake/Dir/Which/Is/Not/Exist/FsTest_touch';
@@ -29,15 +27,15 @@ class FileAsStorageTest extends \PHPUnit_Framework_TestCase
             unlink($filename);
         }
 
+        $this->expectException(FileNotExists::class);
         $file = new File($filename);
         $file->load();
-
-        $this->fail();
     }
 
     public function testLoadNotReadable()
     {
         if (\Runn\Fs\isWindows()) {
+            $this->assertTrue(true);
             return;
         }
         $filename = tempnam(sys_get_temp_dir(), 'FsTest');
@@ -47,6 +45,7 @@ class FileAsStorageTest extends \PHPUnit_Framework_TestCase
             $file = new File($filename);
             $file->load();
         } catch (FileNotReadable $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             chmod($filename, 0777);
@@ -118,14 +117,11 @@ class FileAsStorageTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Some value', $file->get());
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\FileNullContents
-     */
     public function testSaveNullContents()
     {
+        $this->expectException(FileNullContents::class);
         $file = new File();
         $file->save();
-        $this->fail();
     }
 
     public function testSaveNotWritable()
@@ -138,6 +134,7 @@ class FileAsStorageTest extends \PHPUnit_Framework_TestCase
             $file->set('Hello, world!');
             $file->save();
         } catch (FileNotWritable $e) {
+            $this->assertTrue(true);
             return;
         } finally {
             chmod($filename, 0777);

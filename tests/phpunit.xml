@@ -1,12 +1,12 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/latest/phpunit.xsd"
         bootstrap="autoload.php"
 >
 
     <testsuites>
         <testsuite name="Fs">
-            <directory phpVersionOperator=">=" phpVersion="7.0">Fs</directory>
+            <directory phpVersionOperator=">=" phpVersion="7.3">Fs</directory>
         </testsuite>
     </testsuites>
 

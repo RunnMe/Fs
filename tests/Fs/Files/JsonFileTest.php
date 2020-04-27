@@ -2,20 +2,18 @@
 
 namespace Runn\tests\Fs\Files\JsonFile;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Files\JsonFile;
 use Runn\Serialization\Serializers\PassThru;
 
-class JsonFileTest extends \PHPUnit_Framework_TestCase
+class JsonFileTest extends TestCase
 {
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testSetSerializer()
     {
+        $this->expectException(\BadMethodCallException::class);
         $file = new JsonFile();
         $file->setSerializer(new PassThru());
-        $this->fail();
     }
 
     public function testSave()

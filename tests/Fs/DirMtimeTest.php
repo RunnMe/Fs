@@ -2,29 +2,28 @@
 
 namespace Runn\tests\Fs\Dir;
 
+use PHPUnit\Framework\TestCase;
 use Runn\Fs\Dir;
+use Runn\Fs\Exceptions\DirNotExists;
 use Runn\Fs\Exceptions\DirNotReadable;
+use Runn\Fs\Exceptions\EmptyPath;
 
-class DirMtimeTest extends \PHPUnit_Framework_TestCase
+class DirMtimeTest extends TestCase
 {
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\EmptyPath
-     */
     public function testMtimeEmptyPath()
     {
+        $this->expectException(EmptyPath::class);
         $dir = new Dir();
         $dir->mtime();
     }
 
-    /**
-     * @expectedException \Runn\Fs\Exceptions\DirNotExists
-     */
     public function testMtimeNotExistingPath()
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('FsTest');
         $this->assertDirectoryNotExists($path);
 
+        $this->expectException(DirNotExists::class);
         $dir = new Dir($path);
         $dir->mtime();
     }
@@ -63,12 +62,12 @@ class DirMtimeTest extends \PHPUnit_Framework_TestCase
         $dir = new Dir($path);
         mkdir($path);
         $this->assertTrue($dir->exists());
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time(), $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(true, true),1);
 
         touch($path, time()-1000);
-        $this->assertEquals(time()-1000, $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         rmdir($path);
     }
@@ -83,12 +82,12 @@ class DirMtimeTest extends \PHPUnit_Framework_TestCase
 
         $dir = new Dir($path);
         $this->assertTrue($dir->exists());
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time(), $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(true, true), 1);
 
         touch($path, time()-1000);
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         unlink($path . '/test.txt');
         rmdir($path);
@@ -106,24 +105,24 @@ class DirMtimeTest extends \PHPUnit_Framework_TestCase
         touch($path . '/4');
 
         $dir = new Dir($path);
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time(), $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(true, true), 1);
 
         touch($path, time()-1000);
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         touch($path . '/1', time()-10);
         touch($path . '/2', time()-20);
         touch($path . '/3', time()-30);
         touch($path . '/4', time()-40);
 
-        $this->assertEquals(time()-10, $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time()-10, $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         touch($path . '/1', time()-100);
-        $this->assertEquals(time()-20, $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time()-20, $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         unlink($path . '/4');
         unlink($path . '/3');
@@ -155,18 +154,18 @@ class DirMtimeTest extends \PHPUnit_Framework_TestCase
 
         $dir = new Dir($path);
 
-        $this->assertEquals(time()-10, $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time()-10, $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         touch($path . '/1/11/4', time()-5);
 
-        $this->assertEquals(time()-5, $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time()-5, $dir->mtime(),  1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         touch($path . '/1/11/6');
 
-        $this->assertEquals(time(), $dir->mtime(), '', 1);
-        $this->assertEquals(time()-1000, $dir->mtime(true, true), '', 1);
+        $this->assertEqualsWithDelta(time(), $dir->mtime(), 1);
+        $this->assertEqualsWithDelta(time()-1000, $dir->mtime(true, true), 1);
 
         unlink($path . '/1/11/6');
         unlink($path . '/2/5');
