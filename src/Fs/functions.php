@@ -110,6 +110,7 @@ function canXcopy():bool
 
 /**
  * Removes files or directories by *nix 'rm' command
+ * Returns true on success, false on failure
  * @param $path
  * @param bool $recursively
  * @return bool
@@ -123,6 +124,7 @@ function rm($path, $recursively = true):bool
 
 /**
  * Removes files or directories by Windows 'rd' command
+ * Returns true on success, false on failure
  * @param $path
  * @param bool $recursively
  * @return bool
